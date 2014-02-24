@@ -13,7 +13,8 @@
     "index.js"
   ],
   "dependencies": {
-    "cookies": "~0.4.0"
+    "cookies": "~0.4.0",
+    "debug": "*"
   },
   "devDependencies": {
     "connect": "*",
@@ -22,9 +23,6 @@
     "supertest": "*"
   },
   "license": "MIT",
-  "dependencies": {
-    "debug": "*"
-  },
   "scripts": {
     "test": "make test"
   }
