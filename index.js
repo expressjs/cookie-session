@@ -34,7 +34,7 @@ module.exports = function(opts){
 
   debug('session options %j', opts);
 
-  return function session(req, res, next){
+  return function cookieSession(req, res, next){
     var cookies = req.sessionCookies = new Cookies(req, res, keys);
     var sess, json;
 
