@@ -6,12 +6,12 @@ var debug = require('debug')('cookie-session');
 var Cookies = require('cookies');
 
 /**
- * Initialize session middleware with `opts`:
+ * Initialize session middleware with options.
  *
- * - `key` session cookie name ["koa:sess"]
- * - all other options are passed as cookie options
+ * See README.md for documentation of options.
  *
  * @param {Object} [opts]
+ * @return {Function} middleware
  * @api public
  */
 
