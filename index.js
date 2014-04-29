@@ -18,8 +18,8 @@ var Cookies = require('cookies');
 module.exports = function(opts){
   opts = opts || {};
 
-  // key
-  var key = opts.key || 'express:sess';
+  // name - previously "opts.key"
+  var name = opts.name || opts.key || 'express:sess';
 
   // secrets
   var keys = opts.keys;
@@ -40,7 +40,7 @@ module.exports = function(opts){
 
     // to pass to Session()
     req.sessionOptions = opts;
-    req.sessionKey = key;
+    req.sessionKey = name;
 
     req.__defineGetter__('session', function(){
       // already retrieved
@@ -49,7 +49,7 @@ module.exports = function(opts){
       // unset
       if (false === sess) return null;
 
-      json = cookies.get(key, opts);
+      json = cookies.get(name, opts);
 
       if (json) {
         debug('parse %s', json);
@@ -84,7 +84,7 @@ module.exports = function(opts){
         // not accessed
       } else if (false === sess) {
         // remove
-        cookies.set(key, '', opts);
+        cookies.set(name, '', opts);
       } else if (!json && !sess.length) {
         // do nothing if new and not populated
       } else if (sess.changed(json)) {
@@ -182,10 +182,10 @@ Session.prototype.save = function(){
   var ctx = this._ctx;
   var json = this._json || encode(this);
   var opts = ctx.sessionOptions;
-  var key = ctx.sessionKey;
+  var name = ctx.sessionKey;
 
   debug('save %s', json);
-  ctx.sessionCookies.set(key, json, opts);
+  ctx.sessionCookies.set(name, json, opts);
 };
 
 /**
