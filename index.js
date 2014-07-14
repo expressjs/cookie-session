@@ -126,7 +126,8 @@ Session.prototype.toJSON = function(){
 
   Object.keys(this).forEach(function(key){
     if ('isNew' == key) return;
-    if ('_' == key[0]) return;
+    if ('_ctx' == key) return;
+    if ('_json' == key) return;
     obj[key] = self[key];
   });
 
