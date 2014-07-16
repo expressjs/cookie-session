@@ -54,7 +54,7 @@ module.exports = function(opts){
       if (json) {
         debug('parse %s', json);
         try {
-          sess = new Session(req, decode(json));
+          sess = new Session(req, decode(json), opts.allowUnderscorePrefixedProperties);
         } catch (err) {
           // backwards compatibility:
           // create a new session if parsing fails.
@@ -62,11 +62,11 @@ module.exports = function(opts){
           // when `string` is not base64-encoded.
           // but `JSON.parse(string)` will crash.
           if (!(err instanceof SyntaxError)) throw err;
-          sess = new Session(req);
+          sess = new Session(req, null, opts.allowUnderscorePrefixedProperties);
         }
       } else {
         debug('new session');
-        sess = new Session(req);
+        sess = new Session(req, null, opts.allowUnderscorePrefixedProperties);
       }
 
       return sess;
@@ -74,7 +74,7 @@ module.exports = function(opts){
 
     req.__defineSetter__('session', function(val){
       if (null == val) return sess = false;
-      if ('object' == typeof val) return sess = new Session(req, val);
+      if ('object' == typeof val) return sess = new Session(req, val, opts.allowUnderscorePrefixedProperties);
       throw new Error('req.session can only be set as null or an object.');
     });
 
@@ -106,8 +106,9 @@ module.exports = function(opts){
  * @api private
  */
 
-function Session(ctx, obj) {
+function Session(ctx, obj, allowUnderscorePrefixedProperties) {
   this._ctx = ctx;
+  this._allowUnderscorePrefixedProperties = allowUnderscorePrefixedProperties;
   if (!obj) this.isNew = true;
   else for (var k in obj) this[k] = obj[k];
 }
@@ -126,6 +127,7 @@ Session.prototype.toJSON = function(){
 
   Object.keys(this).forEach(function(key){
     if ('isNew' == key) return;
+    if (!self._allowUnderscorePrefixedProperties && '_' == key[0]) return;
     if ('_ctx' == key) return;
     if ('_json' == key) return;
     obj[key] = self[key];
