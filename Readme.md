@@ -8,6 +8,12 @@
   authenticated or not. If a session is _new_ a `Set-Cookie` will be produced regardless
   of populating the session.
 
+## Install
+
+```bash
+$ npm install cookie-session
+```
+
 ## API
 
   View counter example:
