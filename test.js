@@ -52,6 +52,28 @@ describe('Cookie Session', function(){
     })
   })
 
+  describe('when options.secure = true', function(){
+    describe('when app has "trust proxy" option set', function(){
+      it('should work over non-https connection with X-Forwarded-Proto header set', function(done){
+        var app = express();
+        app.set('trust proxy', true)
+        app.use(session({
+          signed: false,
+          secure: true
+        }));
+        app.use(function (req, res, next) {
+          req.session.message = 'hi';
+          res.end();
+        })
+
+        request(app.listen())
+        .get('/')
+        .set('X-Forwarded-Proto', 'https')
+        .expect(200, done);
+      })
+    })
+  })
+
   describe('when the session contains a ;', function(){
     it('should still work', function(done){
       var app = App();
