@@ -4,7 +4,6 @@
   "repository": "expressjs/cookie-session",
   "version": "1.0.2",
   "keywords": [
-    "connect",
     "express",
     "middleware",
     "session"
@@ -17,7 +16,7 @@
     "debug": "*"
   },
   "devDependencies": {
-    "connect": "*",
+    "express": "~4.0.0",
     "mocha": "*",
     "should": "*",
     "supertest": "*"

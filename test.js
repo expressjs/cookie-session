@@ -1,5 +1,5 @@
 var assert = require('assert');
-var connect = require('connect');
+var express = require('express');
 var request = require('supertest');
 var session = require('./');
 
@@ -9,7 +9,7 @@ describe('Cookie Session', function(){
   describe('when options.signed = true', function(){
     describe('when app.keys are set', function(){
       it('should work', function(done){
-        var app = connect();
+        var app = express();
         app.use(session({
           keys: ['a', 'b']
         }));
@@ -36,7 +36,7 @@ describe('Cookie Session', function(){
   describe('when options.signed = false', function(){
     describe('when app.keys are not set', function(){
       it('should work', function(done){
-        var app = connect();
+        var app = express();
         app.use(session({
           signed: false
         }));
@@ -285,7 +285,7 @@ describe('Cookie Session', function(){
 function App(options) {
   options = options || {};
   options.keys = ['a', 'b'];
-  var app = connect();
+  var app = express();
   app.use(session(options));
   return app;
 }
