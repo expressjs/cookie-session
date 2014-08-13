@@ -1,4 +1,7 @@
-# cookie-session [![Build Status](https://travis-ci.org/expressjs/cookie-session.svg)](https://travis-ci.org/expressjs/cookie-session) [![NPM version](https://badge.fury.io/js/cookie-session.svg)](http://badge.fury.io/js/cookie-session)
+# cookie-session
+
+[![NPM version](https://badge.fury.io/js/cookie-session.svg)](http://badge.fury.io/js/cookie-session)
+[![Build Status](https://travis-ci.org/expressjs/cookie-session.svg)](https://travis-ci.org/expressjs/cookie-session)
 
   Simple cookie-based session middleware.
 
