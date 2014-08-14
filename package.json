@@ -13,11 +13,11 @@
     "index.js"
   ],
   "dependencies": {
-    "cookies": "~0.4.0",
+    "cookies": "~0.5.0",
     "debug": "*"
   },
   "devDependencies": {
-    "connect": "*",
+    "express": "~4.8.0",
     "mocha": "*",
     "should": "*",
     "supertest": "*"

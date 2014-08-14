@@ -2,7 +2,7 @@
 process.env.NODE_ENV = 'test';
 
 var assert = require('assert');
-var connect = require('connect');
+var express = require('express');
 var request = require('supertest');
 var session = require('./');
 
@@ -12,7 +12,7 @@ describe('Cookie Session', function(){
   describe('when options.signed = true', function(){
     describe('when app.keys are set', function(){
       it('should work', function(done){
-        var app = connect();
+        var app = express();
         app.use(session({
           keys: ['a', 'b']
         }));
@@ -39,7 +39,7 @@ describe('Cookie Session', function(){
   describe('when options.signed = false', function(){
     describe('when app.keys are not set', function(){
       it('should work', function(done){
-        var app = connect();
+        var app = express();
         app.use(session({
           signed: false
         }));
@@ -50,6 +50,28 @@ describe('Cookie Session', function(){
 
         request(app.listen())
         .get('/')
+        .expect(200, done);
+      })
+    })
+  })
+
+  describe('when options.secure = true', function(){
+    describe('when app has "trust proxy" option set', function(){
+      it('should work over non-https connection with X-Forwarded-Proto header set', function(done){
+        var app = express();
+        app.set('trust proxy', true)
+        app.use(session({
+          signed: false,
+          secure: true
+        }));
+        app.use(function (req, res, next) {
+          req.session.message = 'hi';
+          res.end();
+        })
+
+        request(app.listen())
+        .get('/')
+        .set('X-Forwarded-Proto', 'https')
         .expect(200, done);
       })
     })
@@ -288,7 +310,7 @@ describe('Cookie Session', function(){
 function App(options) {
   options = options || {};
   options.keys = ['a', 'b'];
-  var app = connect();
+  var app = express();
   app.use(session(options));
   return app;
 }
