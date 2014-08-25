@@ -4,7 +4,6 @@
 
 var debug = require('debug')('cookie-session');
 var Cookies = require('cookies');
-var extend = require('util')._extend;
 
 /**
  * Initialize session middleware with options.
@@ -40,7 +39,10 @@ module.exports = function(opts){
     var sess, json;
 
     // to pass to Session()
-    req.sessionOptions = extend({}, opts);
+    req.sessionOptions = {};
+    for (var key in opts) {
+      req.sessionOptions[key] = opts[key];
+    }
     req.sessionKey = name;
 
     req.__defineGetter__('session', function(){
