@@ -217,8 +217,6 @@ Session.prototype.save = function(){
   var opts = ctx.sessionOptions;
   var name = ctx.sessionKey;
 
-  console.log('save');
-  console.log(opts);
   debug('save %s', json);
   ctx.sessionCookies.set(name, json, opts);
 };
