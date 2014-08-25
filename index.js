@@ -4,6 +4,7 @@
 
 var debug = require('debug')('cookie-session');
 var Cookies = require('cookies');
+var extend = require('util')._extend;
 
 /**
  * Initialize session middleware with options.
@@ -39,7 +40,7 @@ module.exports = function(opts){
     var sess, json;
 
     // to pass to Session()
-    req.sessionOptions = opts;
+    req.sessionOptions = extend({}, opts);
     req.sessionKey = name;
 
     req.__defineGetter__('session', function(){
@@ -172,6 +173,38 @@ Session.prototype.__defineGetter__('populated', function(){
 });
 
 /**
+ * Return the cookie options
+ *
+ * @return {Object}
+ * @api public
+ */
+
+Session.prototype.__defineGetter__('opts', function(){
+  return this._ctx.sessionOptions;
+});
+
+/**
+ * Change the session cookie max age
+ *
+ * @param {Number} val
+ * @api public
+ */
+Session.prototype.__defineSetter__('maxage', function(val){
+  this._ctx.sessionOptions.maxage = val;
+  this.save();
+});
+
+/**
+ * Return the session cookie max age
+ *
+ * @return {Number}
+ * @api public
+ */
+Session.prototype.__defineGetter__('maxage', function(){
+  return this._ctx.sessionOptions.maxage;
+});
+
+/**
  * Save session changes by
  * performing a Set-Cookie.
  *
@@ -184,6 +217,8 @@ Session.prototype.save = function(){
   var opts = ctx.sessionOptions;
   var name = ctx.sessionKey;
 
+  console.log('save');
+  console.log(opts);
   debug('save %s', json);
   ctx.sessionCookies.set(name, json, opts);
 };
