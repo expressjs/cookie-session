@@ -46,6 +46,7 @@ app.listen(3000)
   - `name` - The cookie name. Defaults to `express:sess`.
   - `keys` - Keys with which to sign the cookie. See `signed` in cookie options. Multiple keys allows for using rotating credentials.
   - `secret` - A string which will be used as single key if `keys` is not found.
+  - `encrypted` - Encrypt the cookie contents with aes256 and the provided keys.
 
   Other options are passed to `cookies.get()` and
   `cookies.set()` allowing you to control security, domain, path,
