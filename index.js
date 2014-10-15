@@ -94,6 +94,12 @@ module.exports = function(opts){
       writeHead.apply(res, arguments);
     }
 
+    res.updateSessionOptions = function (newOpts){
+      Object.keys(newOpts).forEach(function (key) { 
+        opts[key] = newOpts[key];
+      });
+    }
+
     next();
   }
 };
