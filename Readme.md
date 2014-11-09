@@ -30,9 +30,10 @@ var session = require('cookie-session')
 
 var app = express()
 
+app.set('trust proxy', 1) // trust first proxy
+
 app.use(session({
-  keys: ['key1', 'key2'],
-  secureProxy: true // if you do SSL outside of node
+  keys: ['key1', 'key2']
 }))
 
 app.use(function (req, res, next) {
