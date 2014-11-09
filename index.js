@@ -1,5 +1,7 @@
+
 /**
  * Module dependencies.
+ * @private
  */
 
 var debug = require('debug')('cookie-session');
@@ -7,13 +9,17 @@ var Cookies = require('cookies');
 var onHeaders = require('on-headers');
 
 /**
- * Initialize session middleware with options.
+ * Create a new cookie session middleware.
  *
- * See README.md for documentation of options.
- *
- * @param {Object} [opts]
- * @return {Function} middleware
- * @api public
+ * @param {object} [opts]
+ * @param {boolean} [opts.httpOnly]
+ * @param {array} [opts.keys]
+ * @param {string} [opts.name=express:sess] Name of the cookie to use
+ * @param {boolean} [opts.overwrite]
+ * @param {string} [opts.secret]
+ * @param {boolean} [opts.signed]
+ * @return {function} middleware
+ * @public
  */
 
 module.exports = function(opts){
@@ -138,7 +144,7 @@ Session.prototype.toJSON = function(){
  *
  * @param {String} [prev]
  * @return {Boolean}
- * @api private
+ * @private
  */
 
 Session.prototype.changed = function(prev){
@@ -152,7 +158,7 @@ Session.prototype.changed = function(prev){
  * Used to see if it's "populated".
  *
  * @return {Number}
- * @api public
+ * @public
  */
 
 Session.prototype.__defineGetter__('length', function(){
@@ -163,7 +169,7 @@ Session.prototype.__defineGetter__('length', function(){
  * populated flag, which is just a boolean alias of .length.
  *
  * @return {Boolean}
- * @api public
+ * @public
  */
 
 Session.prototype.__defineGetter__('populated', function(){
@@ -171,10 +177,9 @@ Session.prototype.__defineGetter__('populated', function(){
 });
 
 /**
- * Save session changes by
- * performing a Set-Cookie.
+ * Save session changes by performing a Set-Cookie.
  *
- * @api private
+ * @private
  */
 
 Session.prototype.save = function(){
@@ -192,7 +197,7 @@ Session.prototype.save = function(){
  *
  * @param {String} string
  * @return {Object}
- * @api private
+ * @private
  */
 
 function decode(string) {
@@ -205,7 +210,7 @@ function decode(string) {
  *
  * @param {Object} body
  * @return {String}
- * @api private
+ * @private
  */
 
 function encode(body) {
