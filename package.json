@@ -24,6 +24,6 @@
   },
   "license": "MIT",
   "scripts": {
-    "test": "mocha --require should --reporter spec --bail"
+    "test": "mocha --require should --reporter spec --bail test/"
   }
 }

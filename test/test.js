@@ -4,7 +4,7 @@ process.env.NODE_ENV = 'test';
 var assert = require('assert');
 var connect = require('connect');
 var request = require('supertest');
-var session = require('./');
+var session = require('..');
 
 describe('Cookie Session', function(){
   var cookie;
