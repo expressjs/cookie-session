@@ -17,7 +17,7 @@
     "debug": "*"
   },
   "devDependencies": {
-    "connect": "*",
+    "connect": "3",
     "mocha": "*",
     "supertest": "*"
   },
