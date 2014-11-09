@@ -56,7 +56,7 @@ app.listen(3000)
 
 #### Cookie Options
 
-The `cookie` option take an object that can contain any of these options (for the full list, see [cookies module documentation](https://www.npmjs.org/package/cookies#readme).
+The options can also contain any of the follow (for the full list, see [cookies module documentation](https://www.npmjs.org/package/cookies#readme):
 
   - `maxAge`: a number representing the milliseconds from `Date.now()` for expiry
   - `expires`: a `Date` object indicating the cookie's expiration date (expires at the end of session by default).
