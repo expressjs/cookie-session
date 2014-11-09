@@ -1,5 +1,5 @@
-unreleased
-==========
+1.1.0 / 2014-11-09
+==================
 
   * Fix errors setting cookies to be non-fatal
   * Use `on-headers` instead of `writeHead` patching
