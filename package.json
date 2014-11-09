@@ -19,11 +19,10 @@
   "devDependencies": {
     "connect": "*",
     "mocha": "*",
-    "should": "*",
     "supertest": "*"
   },
   "license": "MIT",
   "scripts": {
-    "test": "mocha --require should --reporter spec --bail test/"
+    "test": "mocha --reporter spec --bail test/"
   }
 }
