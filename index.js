@@ -4,6 +4,7 @@
 
 var debug = require('debug')('cookie-session');
 var Cookies = require('cookies');
+var onHeaders = require('on-headers');
 
 /**
  * Initialize session middleware with options.
@@ -78,8 +79,7 @@ module.exports = function(opts){
       throw new Error('req.session can only be set as null or an object.');
     });
 
-    var writeHead = res.writeHead;
-    res.writeHead = function () {
+    onHeaders(res, function () {
       if (undefined === sess) {
         // not accessed
       } else if (false === sess) {
@@ -91,8 +91,7 @@ module.exports = function(opts){
         // save
         sess.save();
       }
-      writeHead.apply(res, arguments);
-    }
+    });
 
     next();
   }
