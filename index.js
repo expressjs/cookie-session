@@ -39,7 +39,11 @@ module.exports = function(opts){
     var cookies = req.sessionCookies = new Cookies(req, res, keys);
     var sess, json;
 
-    // to pass to Session()
+    // make it coherient with normal Express.js/Session
+    if (opts.cookie !== undefined && opts.cookie.maxAge !== undefined)
+      opts.cookie.maxage = opts.cookie.maxAge;
+
+    // to pass to Session()    
     req.sessionOptions = opts;
     req.sessionKey = name;
 
