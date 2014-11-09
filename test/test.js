@@ -55,6 +55,28 @@ describe('Cookie Session', function(){
     })
   })
 
+  describe('when options.secure = true', function(){
+    describe('when connection not secured', function(){
+      it('should not Set-Cookie', function(done) {
+        var app = App({ secure: true });
+        app.use(function (req, res, next) {
+          process.nextTick(function(){
+            req.session.message = 'hello!';
+            res.end('greetings');
+          })
+        })
+
+        request(app)
+        .get('/')
+        .expect(200, function(err, res){
+          if (err) return done(err);
+          assert.strictEqual(res.header['set-cookie'], undefined);
+          done();
+        })
+      })
+    })
+  })
+
   describe('when the session contains a ;', function(){
     it('should still work', function(done){
       var app = App();

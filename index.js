@@ -85,17 +85,24 @@ module.exports = function(opts){
       throw new Error('req.session can only be set as null or an object.');
     });
 
-    onHeaders(res, function () {
-      if (undefined === sess) {
+    onHeaders(res, function setHeaders() {
+      if (sess === undefined) {
         // not accessed
-      } else if (false === sess) {
-        // remove
-        cookies.set(name, '', opts);
-      } else if (!json && !sess.length) {
-        // do nothing if new and not populated
-      } else if (sess.changed(json)) {
-        // save
-        sess.save();
+        return;
+      }
+
+      try {
+        if (sess === false) {
+          // remove
+          cookies.set(name, '', opts);
+        } else if (!json && !sess.length) {
+          // do nothing if new and not populated
+        } else if (sess.changed(json)) {
+          // save
+          sess.save();
+        }
+      } catch (e) {
+        debug('error saving session %s', e.message);
       }
     });
 
