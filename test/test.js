@@ -82,6 +82,20 @@ describe('Cookie Session', function(){
     })
   })
 
+  describe('when the session is invalid', function(){
+    it('should create new session', function(done){
+      var app = App({ name: 'session', signed: false });
+      app.use(function (req, res, next) {
+        res.end(String(req.session.isNew))
+      })
+
+      request(app)
+      .get('/')
+      .set('Cookie', 'session=bogus')
+      .expect(200, 'true', done)
+    })
+  })
+
   describe('new session', function(){
     describe('when not accessed', function(){
       it('should not Set-Cookie', function(done) {
