@@ -14,7 +14,7 @@
   ],
   "dependencies": {
     "cookies": "~0.4.0",
-    "debug": "*"
+    "debug": "~2.1.0"
   },
   "devDependencies": {
     "connect": "3",
