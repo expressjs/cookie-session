@@ -3,6 +3,7 @@
 [![NPM Version][npm-image]][npm-url]
 [![NPM Downloads][downloads-image]][downloads-url]
 [![Build Status][travis-image]][travis-url]
+[![Test Coverage][coveralls-image]][coveralls-url]
 
   Simple cookie-based session middleware.
 
@@ -86,5 +87,7 @@ req.session = null
 [npm-url]: https://npmjs.org/package/cookie-session
 [travis-image]: https://img.shields.io/travis/expressjs/cookie-session.svg?style=flat
 [travis-url]: https://travis-ci.org/expressjs/cookie-session
+[coveralls-image]: https://img.shields.io/coveralls/expressjs/cookie-session.svg?style=flat
+[coveralls-url]: https://coveralls.io/r/expressjs/cookie-session?branch=master
 [downloads-image]: https://img.shields.io/npm/dm/cookie-session.svg?style=flat
 [downloads-url]: https://npmjs.org/package/cookie-session
