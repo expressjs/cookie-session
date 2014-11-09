@@ -19,7 +19,7 @@
   "devDependencies": {
     "connect": "3",
     "mocha": "~2.0.1",
-    "supertest": "*"
+    "supertest": "~0.14.0"
   },
   "license": "MIT",
   "scripts": {
