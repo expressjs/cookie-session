@@ -283,6 +283,33 @@ describe('Cookie Session', function(){
       })
     })
   })
+
+  describe('req.session', function () {
+    describe('.populated', function () {
+      it('should be false on new session', function (done) {
+        var app = App();
+        app.use(function (req, res, next) {
+          res.end(String(req.session.populated))
+        })
+
+        request(app.listen())
+        .get('/')
+        .expect(200, 'false', done)
+      })
+
+      it('should be true after adding property', function (done) {
+        var app = App();
+        app.use(function (req, res, next) {
+          req.session.message = 'hello!'
+          res.end(String(req.session.populated))
+        })
+
+        request(app.listen())
+        .get('/')
+        .expect(200, 'true', done)
+      })
+    })
+  })
 })
 
 function App(options) {
