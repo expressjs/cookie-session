@@ -1,7 +1,8 @@
 # cookie-session
 
-[![NPM version](https://badge.fury.io/js/cookie-session.svg)](http://badge.fury.io/js/cookie-session)
-[![Build Status](https://travis-ci.org/expressjs/cookie-session.svg)](https://travis-ci.org/expressjs/cookie-session)
+[![NPM Version][npm-image]][npm-url]
+[![NPM Downloads][downloads-image]][downloads-url]
+[![Build Status][travis-image]][travis-url]
 
   Simple cookie-based session middleware.
 
@@ -80,3 +81,10 @@ req.session = null
 ## License
 
 [MIT](LICENSE)
+
+[npm-image]: https://img.shields.io/npm/v/cookie-session.svg?style=flat
+[npm-url]: https://npmjs.org/package/cookie-session
+[travis-image]: https://img.shields.io/travis/expressjs/cookie-session.svg?style=flat
+[travis-url]: https://travis-ci.org/expressjs/cookie-session
+[downloads-image]: https://img.shields.io/npm/dm/cookie-session.svg?style=flat
+[downloads-url]: https://npmjs.org/package/cookie-session
