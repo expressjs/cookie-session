@@ -21,7 +21,9 @@
     "supertest": "~0.14.0"
   },
   "files": [
+    "HISTORY.md",
     "LICENSE",
+    "README.md",
     "index.js"
   ],
   "license": "MIT",
