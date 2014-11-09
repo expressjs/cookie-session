@@ -106,6 +106,12 @@ module.exports = function(opts){
       }
     });
 
+    res.updateSessionOptions = function (newOpts){
+      Object.keys(newOpts).forEach(function (key) { 
+        opts[key] = newOpts[key];
+      });
+    }
+
     next();
   }
 };
