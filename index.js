@@ -191,7 +191,7 @@ Session.prototype.__defineGetter__('opts', function(){
  * @param {Number} val
  * @api public
  */
-Session.prototype.__defineSetter__('maxage', function(val){
+Session.prototype.__defineSetter__('maxAge', function(val){
   this._ctx.sessionOptions.maxage = val;
   this.save();
 });
@@ -202,7 +202,7 @@ Session.prototype.__defineSetter__('maxage', function(val){
  * @return {Number}
  * @api public
  */
-Session.prototype.__defineGetter__('maxage', function(){
+Session.prototype.__defineGetter__('maxAge', function(){
   return this._ctx.sessionOptions.maxage;
 });
 
