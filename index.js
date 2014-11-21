@@ -47,6 +47,10 @@ module.exports = function(opts){
 
     // to pass to Session()
     req.sessionOptions = opts;
+    req.sessionOptions = {};
+    for (var key in opts) {
+      req.sessionOptions[key] = opts[key];
+    }
     req.sessionKey = name;
 
     req.__defineGetter__('session', function(){
@@ -181,6 +185,38 @@ Session.prototype.__defineGetter__('length', function(){
 
 Session.prototype.__defineGetter__('populated', function(){
   return !!this.length;
+});
+
+/**
+ * Return the cookie options
+ *
+ * @return {Object}
+ * @api public
+ */
+
+Session.prototype.__defineGetter__('opts', function(){
+  return this._ctx.sessionOptions;
+});
+
+/**
+ * Change the session cookie max age
+ *
+ * @param {Number} val
+ * @api public
+ */
+Session.prototype.__defineSetter__('maxAge', function(val){
+  this._ctx.sessionOptions.maxage = val;
+  this.save();
+});
+
+/**
+ * Return the session cookie max age
+ *
+ * @return {Number}
+ * @api public
+ */
+Session.prototype.__defineGetter__('maxAge', function(){
+  return this._ctx.sessionOptions.maxage;
 });
 
 /**
