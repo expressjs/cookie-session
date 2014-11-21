@@ -1,18 +1,25 @@
+
 /**
  * Module dependencies.
+ * @private
  */
 
 var debug = require('debug')('cookie-session');
 var Cookies = require('cookies');
+var onHeaders = require('on-headers');
 
 /**
- * Initialize session middleware with options.
+ * Create a new cookie session middleware.
  *
- * See README.md for documentation of options.
- *
- * @param {Object} [opts]
- * @return {Function} middleware
- * @api public
+ * @param {object} [opts]
+ * @param {boolean} [opts.httpOnly]
+ * @param {array} [opts.keys]
+ * @param {string} [opts.name=express:sess] Name of the cookie to use
+ * @param {boolean} [opts.overwrite]
+ * @param {string} [opts.secret]
+ * @param {boolean} [opts.signed]
+ * @return {function} middleware
+ * @public
  */
 
 module.exports = function(opts){
@@ -39,6 +46,7 @@ module.exports = function(opts){
     var sess, json;
 
     // to pass to Session()
+    req.sessionOptions = opts;
     req.sessionOptions = {};
     for (var key in opts) {
       req.sessionOptions[key] = opts[key];
@@ -81,21 +89,26 @@ module.exports = function(opts){
       throw new Error('req.session can only be set as null or an object.');
     });
 
-    var writeHead = res.writeHead;
-    res.writeHead = function () {
-      if (undefined === sess) {
+    onHeaders(res, function setHeaders() {
+      if (sess === undefined) {
         // not accessed
-      } else if (false === sess) {
-        // remove
-        cookies.set(name, '', opts);
-      } else if (!json && !sess.length) {
-        // do nothing if new and not populated
-      } else if (sess.changed(json)) {
-        // save
-        sess.save();
+        return;
       }
-      writeHead.apply(res, arguments);
-    }
+
+      try {
+        if (sess === false) {
+          // remove
+          cookies.set(name, '', opts);
+        } else if (!json && !sess.length) {
+          // do nothing if new and not populated
+        } else if (sess.changed(json)) {
+          // save
+          sess.save();
+        }
+      } catch (e) {
+        debug('error saving session %s', e.message);
+      }
+    });
 
     next();
   }
@@ -142,7 +155,7 @@ Session.prototype.toJSON = function(){
  *
  * @param {String} [prev]
  * @return {Boolean}
- * @api private
+ * @private
  */
 
 Session.prototype.changed = function(prev){
@@ -156,7 +169,7 @@ Session.prototype.changed = function(prev){
  * Used to see if it's "populated".
  *
  * @return {Number}
- * @api public
+ * @public
  */
 
 Session.prototype.__defineGetter__('length', function(){
@@ -167,7 +180,7 @@ Session.prototype.__defineGetter__('length', function(){
  * populated flag, which is just a boolean alias of .length.
  *
  * @return {Boolean}
- * @api public
+ * @public
  */
 
 Session.prototype.__defineGetter__('populated', function(){
@@ -207,10 +220,9 @@ Session.prototype.__defineGetter__('maxAge', function(){
 });
 
 /**
- * Save session changes by
- * performing a Set-Cookie.
+ * Save session changes by performing a Set-Cookie.
  *
- * @api private
+ * @private
  */
 
 Session.prototype.save = function(){
@@ -228,7 +240,7 @@ Session.prototype.save = function(){
  *
  * @param {String} string
  * @return {Object}
- * @api private
+ * @private
  */
 
 function decode(string) {
@@ -241,7 +253,7 @@ function decode(string) {
  *
  * @param {Object} body
  * @return {String}
- * @api private
+ * @private
  */
 
 function encode(body) {

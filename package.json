@@ -2,28 +2,34 @@
   "name": "cookie-session",
   "description": "cookie session middleware",
   "repository": "expressjs/cookie-session",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "keywords": [
     "connect",
     "express",
     "middleware",
     "session"
   ],
-  "files": [
-    "index.js"
-  ],
   "dependencies": {
-    "cookies": "~0.4.0",
-    "debug": "*"
+    "cookies": "0.5.0",
+    "debug": "~2.1.0",
+    "on-headers": "~1.0.0"
   },
   "devDependencies": {
-    "connect": "*",
-    "mocha": "*",
-    "should": "*",
-    "supertest": "*"
+    "connect": "3",
+    "istanbul": "0.3.2",
+    "mocha": "~2.0.1",
+    "supertest": "~0.14.0"
   },
+  "files": [
+    "HISTORY.md",
+    "LICENSE",
+    "README.md",
+    "index.js"
+  ],
   "license": "MIT",
   "scripts": {
-    "test": "mocha --require should --reporter spec --bail"
+    "test": "mocha --check-leaks --reporter spec --bail test/",
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --check-leaks --reporter dot test/",
+    "test-travis": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --check-leaks --reporter spec test/"
   }
 }

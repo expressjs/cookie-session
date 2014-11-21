@@ -4,7 +4,7 @@ process.env.NODE_ENV = 'test';
 var assert = require('assert');
 var connect = require('connect');
 var request = require('supertest');
-var session = require('./');
+var session = require('..');
 
 describe('Cookie Session', function(){
   var cookie;
@@ -55,6 +55,28 @@ describe('Cookie Session', function(){
     })
   })
 
+  describe('when options.secure = true', function(){
+    describe('when connection not secured', function(){
+      it('should not Set-Cookie', function(done) {
+        var app = App({ secure: true });
+        app.use(function (req, res, next) {
+          process.nextTick(function(){
+            req.session.message = 'hello!';
+            res.end('greetings');
+          })
+        })
+
+        request(app)
+        .get('/')
+        .expect(200, function(err, res){
+          if (err) return done(err);
+          assert.strictEqual(res.header['set-cookie'], undefined);
+          done();
+        })
+      })
+    })
+  })
+
   describe('when the session contains a ;', function(){
     it('should still work', function(done){
       var app = App();
@@ -82,6 +104,20 @@ describe('Cookie Session', function(){
     })
   })
 
+  describe('when the session is invalid', function(){
+    it('should create new session', function(done){
+      var app = App({ name: 'session', signed: false });
+      app.use(function (req, res, next) {
+        res.end(String(req.session.isNew))
+      })
+
+      request(app)
+      .get('/')
+      .set('Cookie', 'session=bogus')
+      .expect(200, 'true', done)
+    })
+  })
+
   describe('new session', function(){
     describe('when not accessed', function(){
       it('should not Set-Cookie', function(done) {
@@ -94,7 +130,7 @@ describe('Cookie Session', function(){
         .get('/')
         .expect(200, function(err, res){
           if (err) return done(err);
-          res.header.should.not.have.property('set-cookie');
+          assert.strictEqual(res.header['set-cookie'], undefined);
           done();
         })
       })
@@ -112,7 +148,7 @@ describe('Cookie Session', function(){
         .get('/')
         .expect(200, function(err, res){
           if (err) return done(err);
-          res.header.should.not.have.property('set-cookie');
+          assert.strictEqual(res.header['set-cookie'], undefined);
           done();
         })
       })
@@ -146,7 +182,7 @@ describe('Cookie Session', function(){
         .get('/')
         .expect(200, function(err, res){
           if (err) return done(err);
-          res.header.should.not.have.property('set-cookie');
+          assert.strictEqual(res.header['set-cookie'], undefined);
           done();
         })
       })
@@ -166,7 +202,7 @@ describe('Cookie Session', function(){
         .set('Cookie', cookie)
         .expect(200, function(err, res){
           if (err) return done(err);
-          res.header.should.not.have.property('set-cookie');
+          assert.strictEqual(res.header['set-cookie'], undefined);
           done();
         })
       })
@@ -176,7 +212,7 @@ describe('Cookie Session', function(){
       it('should be the same session', function(done){
         var app = App();
         app.use(function (req, res, next) {
-          req.session.message.should.equal('hello');
+          assert.equal(req.session.message, 'hello');
           res.end('aklsjdfkljasdf');
         })
 
@@ -189,7 +225,7 @@ describe('Cookie Session', function(){
       it('should not Set-Cookie', function(done){
         var app = App();
         app.use(function (req, res, next) {
-          req.session.message.should.equal('hello');
+          assert.equal(req.session.message, 'hello');
           res.end('aklsjdfkljasdf');
         })
 
@@ -198,7 +234,7 @@ describe('Cookie Session', function(){
         .set('Cookie', cookie)
         .expect(200, function(err, res){
           if (err) return done(err);
-          res.header.should.not.have.property('set-cookie');
+          assert.strictEqual(res.header['set-cookie'], undefined);
           done();
         })
       })
@@ -249,7 +285,7 @@ describe('Cookie Session', function(){
         .get('/')
         .expect(200, function(err, res){
           if (err) return done(err);
-          res.header.should.not.have.property('set-cookie');
+          assert.strictEqual(res.header['set-cookie'], undefined);
           done();
         });
       })
@@ -280,6 +316,33 @@ describe('Cookie Session', function(){
         request(app.listen())
         .get('/')
         .expect(500, done);
+      })
+    })
+  })
+
+  describe('req.session', function () {
+    describe('.populated', function () {
+      it('should be false on new session', function (done) {
+        var app = App();
+        app.use(function (req, res, next) {
+          res.end(String(req.session.populated))
+        })
+
+        request(app.listen())
+        .get('/')
+        .expect(200, 'false', done)
+      })
+
+      it('should be true after adding property', function (done) {
+        var app = App();
+        app.use(function (req, res, next) {
+          req.session.message = 'hello!'
+          res.end(String(req.session.populated))
+        })
+
+        request(app.listen())
+        .get('/')
+        .expect(200, 'true', done)
       })
     })
   })
