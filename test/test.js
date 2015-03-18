@@ -222,23 +222,41 @@ describe('Cookie Session', function(){
         .expect(200, done);
       })
 
-      it('should not Set-Cookie', function(done){
-        var app = App();
-        app.use(function (req, res, next) {
-          assert.equal(req.session.message, 'hello');
-          res.end('aklsjdfkljasdf');
-        })
+      describe('when options.overwrite = true', function(){
+        it('should Set-Cookie', function(done){
+          var app = App({overwrite: true});
+          app.use(function (req, res, next) {
+            assert.equal(req.session.message, 'hello');
+            res.end('aklsjdfkljasdf');
+          })
 
-        request(app.listen())
-        .get('/')
-        .set('Cookie', cookie)
-        .expect(200, function(err, res){
-          if (err) return done(err);
-          assert.strictEqual(res.header['set-cookie'], undefined);
-          done();
+          request(app.listen())
+            .get('/')
+            .set('Cookie', cookie)
+            .expect('Set-Cookie', /express:sess/)
+            .expect(200, done)
+          })
         })
       })
-    })
+
+      describe('when options.overwrite = false', function(){
+        it('should not Set-Cookie', function(done){
+          var app = App({overwrite: false});
+          app.use(function (req, res, next) {
+            assert.equal(req.session.message, 'hello');
+            res.end('aklsjdfkljasdf');
+          })
+
+          request(app.listen())
+            .get('/')
+            .set('Cookie', cookie)
+            .expect(200, function(err, res){
+              if (err) return done(err);
+              assert.strictEqual(res.header['set-cookie'], undefined);
+              done();
+            })
+          })
+        })
 
     describe('when accessed and changed', function(){
       it('should Set-Cookie', function(done){
