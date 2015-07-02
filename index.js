@@ -17,21 +17,28 @@ var Cookies = require('cookies');
 var onHeaders = require('on-headers');
 
 /**
+ * Module exports.
+ * @public
+ */
+
+module.exports = cookieSession
+
+/**
  * Create a new cookie session middleware.
  *
- * @param {object} [opts]
- * @param {boolean} [opts.httpOnly]
- * @param {array} [opts.keys]
- * @param {string} [opts.name=express:sess] Name of the cookie to use
- * @param {boolean} [opts.overwrite]
- * @param {string} [opts.secret]
- * @param {boolean} [opts.signed]
+ * @param {object} [options]
+ * @param {boolean} [options.httpOnly=true]
+ * @param {array} [options.keys]
+ * @param {string} [options.name=express:sess] Name of the cookie to use
+ * @param {boolean} [options.overwrite=true]
+ * @param {string} [options.secret]
+ * @param {boolean} [options.signed=true]
  * @return {function} middleware
  * @public
  */
 
-module.exports = function(opts){
-  opts = opts || {};
+function cookieSession(options) {
+  var opts = options || {}
 
   // name - previously "opts.key"
   var name = opts.name || opts.key || 'express:sess';
@@ -49,7 +56,7 @@ module.exports = function(opts){
 
   debug('session options %j', opts);
 
-  return function cookieSession(req, res, next){
+  return function _cookieSession(req, res, next) {
     var cookies = req.sessionCookies = new Cookies(req, res, keys);
     var sess, json;
 

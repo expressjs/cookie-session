@@ -6,7 +6,7 @@ unreleased
     - Fix high intensity foreground color for bold
     - deps: ms@0.7.0
   * perf: enable strict mode
-  * perf: remove an argument reassignment
+  * perf: remove argument reassignments
 
 1.1.0 / 2014-11-09
 ==================
