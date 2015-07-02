@@ -115,13 +115,21 @@ module.exports = function(opts){
  *
  * @param {Context} ctx
  * @param {Object} obj
- * @api private
+ * @private
  */
 
 function Session(ctx, obj) {
-  this._ctx = ctx;
-  if (!obj) this.isNew = true;
-  else for (var k in obj) this[k] = obj[k];
+  this._ctx = ctx
+
+  Object.defineProperty(this, 'isNew', {
+    value: !obj
+  })
+
+  if (obj) {
+    for (var key in obj) {
+      this[key] = obj[key]
+    }
+  }
 }
 
 /**
@@ -137,7 +145,6 @@ Session.prototype.toJSON = function(){
   var obj = {};
 
   Object.keys(this).forEach(function(key){
-    if ('isNew' == key) return;
     if ('_' == key[0]) return;
     obj[key] = self[key];
   });
