@@ -61,8 +61,8 @@ function cookieSession(options) {
     var sess, json;
 
     // to pass to Session()
-    req.sessionOptions = opts;
-    req.sessionKey = name;
+    req.sessionOptions = Object.create(opts)
+    req.sessionKey = name
 
     req.__defineGetter__('session', function(){
       // already retrieved
@@ -71,7 +71,7 @@ function cookieSession(options) {
       // unset
       if (false === sess) return null;
 
-      json = cookies.get(name, opts);
+      json = cookies.get(name, req.sessionOptions)
 
       if (json) {
         debug('parse %s', json);
@@ -109,7 +109,7 @@ function cookieSession(options) {
       try {
         if (sess === false) {
           // remove
-          cookies.set(name, '', opts);
+          cookies.set(name, '', req.sessionOptions)
         } else if (!json && !sess.length) {
           // do nothing if new and not populated
         } else if (sess.changed(json)) {

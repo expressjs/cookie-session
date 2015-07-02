@@ -78,6 +78,12 @@ Is `true` if the session is new.
 
 Determine if the session has been populated with data or is empty.
 
+### req.sessionOptions
+
+Represents the session options for the current request. These options are a
+shallow clone of what was provided at middleware construction and can be
+altered to change cookie setting behavior on a per-request basis.
+
 ### Destroying a session
 
   To destroy a session simply set it to `null`:
@@ -88,7 +94,7 @@ req.session = null
 
 ## Example
 
-View counter example:
+### Simple view counter example
 
 ```js
 var cookieSession = require('cookie-session')
@@ -110,6 +116,30 @@ app.use(function (req, res, next) {
 })
 
 app.listen(3000)
+```
+
+## Per-user sticky max age
+
+```js
+var cookieSession = require('cookie-session')
+var express = require('express')
+
+var app = express()
+
+app.set('trust proxy', 1) // trust first proxy
+
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2']
+}))
+
+// This allows you to set req.session.maxAge to let certain sessions
+// have a different value than the default.
+app.use(function (req, res, next) {
+  req.sessionOptions.maxAge = req.session.maxAge || req.sessionOptions.maxAge
+})
+
+// ... your logic here ...
 ```
 
 ## License

@@ -346,6 +346,50 @@ describe('Cookie Session', function(){
       })
     })
   })
+
+  describe('req.sessionOptions', function () {
+    it('should be the session options', function (done) {
+      var app = App({ name: 'session' })
+      app.use(function (req, res, next) {
+        res.end(String(req.sessionOptions.name))
+      })
+
+      request(app)
+      .get('/')
+      .expect(200, 'session', done)
+    })
+
+    it('should alter the cookie setting', function (done) {
+      var app = App({ maxAge: 3600000, name: 'session' })
+      app.use(function (req, res, next) {
+        if (req.url === '/max') {
+          req.sessionOptions.maxAge = 6500000
+        }
+
+        req.session.message = 'hello!'
+        res.end()
+      })
+
+      request(app)
+      .get('/')
+      .expect(function (res) {
+        var date = new Date(res.headers.date)
+        var expires = new Date(res.headers['set-cookie'][0].match(/expires=([^;]+)/)[1])
+        assert.ok(expires - date <= 3600000)
+      })
+      .expect(200, function (err) {
+        if (err) return done(err)
+        request(app)
+        .get('/max')
+        .expect(function (res) {
+          var date = new Date(res.headers.date)
+          var expires = new Date(res.headers['set-cookie'][0].match(/expires=([^;]+)/)[1])
+          assert.ok(expires - date > 5000000)
+        })
+        .expect(200, done)
+      })
+    })
+  })
 })
 
 function App(options) {

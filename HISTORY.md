@@ -2,6 +2,7 @@ unreleased
 ==========
 
   * Make `isNew` non-enumerable and non-writeable
+  * Make `req.sessionOptions` a shallow clone to override per-request
   * deps: debug@~2.2.0
     - Fix high intensity foreground color for bold
     - deps: ms@0.7.0
