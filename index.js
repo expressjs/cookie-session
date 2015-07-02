@@ -97,7 +97,7 @@ module.exports = function(opts){
           cookies.set(name, '', opts);
         } else if (!json && !sess.length) {
           // do nothing if new and not populated
-        } else if (sess.changed(json)) {
+        } else if (opts.overwrite || sess.changed(json)) {
           // save
           sess.save();
         }
