@@ -228,6 +228,6 @@ function decode(string) {
  */
 
 function encode(body) {
-  body = JSON.stringify(body);
-  return new Buffer(body).toString('base64');
+  var str = JSON.stringify(body)
+  return new Buffer(str).toString('base64')
 }
