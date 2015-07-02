@@ -1,5 +1,5 @@
-unreleased
-==========
+1.2.0 / 2015-07-01
+==================
 
   * Make `isNew` non-enumerable and non-writeable
   * Make `req.sessionOptions` a shallow clone to override per-request

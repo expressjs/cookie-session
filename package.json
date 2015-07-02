@@ -2,7 +2,7 @@
   "name": "cookie-session",
   "description": "cookie session middleware",
   "repository": "expressjs/cookie-session",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "keywords": [
     "connect",
     "express",
