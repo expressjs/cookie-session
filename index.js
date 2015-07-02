@@ -1,3 +1,9 @@
+/*!
+ * cookie-session
+ * Copyright(c) 2013 Jonathan Ong
+ * Copyright(c) 2014-2015 Douglas Christopher Wilson
+ * MIT Licensed
+ */
 
 'use strict'
 
