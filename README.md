@@ -85,13 +85,13 @@ req.session = null
 
 [MIT](LICENSE)
 
-[npm-image]: https://img.shields.io/npm/v/cookie-session.svg?style=flat
+[npm-image]: https://img.shields.io/npm/v/cookie-session.svg
 [npm-url]: https://npmjs.org/package/cookie-session
-[travis-image]: https://img.shields.io/travis/expressjs/cookie-session.svg?style=flat
+[travis-image]: https://img.shields.io/travis/expressjs/cookie-session/master.svg
 [travis-url]: https://travis-ci.org/expressjs/cookie-session
-[coveralls-image]: https://img.shields.io/coveralls/expressjs/cookie-session.svg?style=flat
+[coveralls-image]: https://img.shields.io/coveralls/expressjs/cookie-session.svg
 [coveralls-url]: https://coveralls.io/r/expressjs/cookie-session?branch=master
-[downloads-image]: https://img.shields.io/npm/dm/cookie-session.svg?style=flat
+[downloads-image]: https://img.shields.io/npm/dm/cookie-session.svg
 [downloads-url]: https://npmjs.org/package/cookie-session
-[gratipay-image]: https://img.shields.io/gratipay/dougwilson.svg?style=flat
+[gratipay-image]: https://img.shields.io/gratipay/dougwilson.svg
 [gratipay-url]: https://www.gratipay.com/dougwilson/
