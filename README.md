@@ -26,19 +26,35 @@ $ npm install cookie-session
 var cookieSession = require('cookie-session')
 ```
 
-### Options
+### cookieSession(options)
 
-  - `name` - The cookie name. Defaults to `express:sess`.
-  - `keys` - Keys with which to sign the cookie. See `signed` in cookie options. Multiple keys allows for using rotating credentials.
-  - `secret` - A string which will be used as single key if `keys` is not found.
+Create a new cookie session middleware with the provided options.
 
-  Other options are passed to `cookies.get()` and
-  `cookies.set()` allowing you to control security, domain, path,
-  and signing among other settings.
+#### Options
 
-#### Cookie Options
+Cookie session accepts these properties in the options object.
 
-The options can also contain any of the follow (for the full list, see [cookies module documentation](https://www.npmjs.org/package/cookies#readme):
+##### name
+
+The name of the cookie to set, defaults to `express:sess`.
+
+##### keys
+
+The list of keys to use to sign & verify cookie values. Set cookies are always
+signed with `keys[0]`, while the other keys are valid for verification, allowing
+for key rotation.
+
+##### secret
+
+A string which will be used as single key if `keys` is not provided.
+
+##### Cookie Options
+
+Other options are passed to `cookies.get()` and `cookies.set()` allowing you
+to control security, domain, path, and signing among other settings.
+
+The options can also contain any of the follow (for the full list, see
+[cookies module documentation](https://www.npmjs.org/package/cookies#readme):
 
   - `maxAge`: a number representing the milliseconds from `Date.now()` for expiry
   - `expires`: a `Date` object indicating the cookie's expiration date (expires at the end of session by default).
