@@ -22,27 +22,8 @@ $ npm install cookie-session
 
 ## API
 
-  View counter example:
-
 ```js
-var express = require('express')
-var session = require('cookie-session')
-
-var app = express()
-
-app.set('trust proxy', 1) // trust first proxy
-
-app.use(session({
-  keys: ['key1', 'key2']
-}))
-
-app.use(function (req, res, next) {
-  var n = req.session.views || 0
-  req.session.views = ++n
-  res.end(n + ' views')
-})
-
-app.listen(3000)
+var cookieSession = require('cookie-session')
 ```
 
 ### Options
@@ -79,6 +60,32 @@ The options can also contain any of the follow (for the full list, see [cookies 
 
 ```js
 req.session = null
+```
+
+## Example
+
+View counter example:
+
+```js
+var cookieSession = require('cookie-session')
+var express = require('express')
+
+var app = express()
+
+app.set('trust proxy', 1) // trust first proxy
+
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2']
+}))
+
+app.use(function (req, res, next) {
+  var n = req.session.views || 0
+  req.session.views = n++
+  res.end(n + ' views')
+})
+
+app.listen(3000)
 ```
 
 ## License
