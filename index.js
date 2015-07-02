@@ -144,21 +144,24 @@ function Session(ctx, obj) {
  * JSON representation of the session.
  *
  * @return {Object}
- * @api public
+ * @public
  */
 
 Session.prototype.inspect =
-Session.prototype.toJSON = function(){
-  var self = this;
-  var obj = {};
+Session.prototype.toJSON = function toJSON() {
+  var keys = Object.keys(this)
+  var obj = {}
 
-  Object.keys(this).forEach(function(key){
-    if ('_' == key[0]) return;
-    obj[key] = self[key];
-  });
+  for (var i = 0; i < keys.length; i++) {
+    var key = keys[i]
 
-  return obj;
-};
+    if (key[0] !== '_') {
+      obj[key] = this[key]
+    }
+  }
+
+  return obj
+}
 
 /**
  * Check if the session has changed relative to the `prev`
