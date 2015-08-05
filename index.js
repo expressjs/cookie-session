@@ -40,8 +40,8 @@ module.exports = cookieSession
 function cookieSession(options) {
   var opts = options || {}
 
-  // name - previously "opts.key"
-  var name = opts.name || opts.key || 'express:sess';
+  // cookie name
+  var name = opts.name || 'express:sess';
 
   // secrets
   var keys = opts.keys;

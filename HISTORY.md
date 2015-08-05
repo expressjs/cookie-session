@@ -1,3 +1,8 @@
+2.x
+===
+
+  * Remove the `key` option; use `name` instead
+
 1.2.0 / 2015-07-01
 ==================
 
