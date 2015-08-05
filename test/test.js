@@ -164,7 +164,7 @@ describe('Cookie Session', function(){
 
         request(app.listen())
         .get('/')
-        .expect('Set-Cookie', /express:sess/)
+        .expect('Set-Cookie', /express\.sess/)
         .expect(200, function(err, res){
           if (err) return done(err);
           cookie = res.header['set-cookie'].join(';');
@@ -251,7 +251,7 @@ describe('Cookie Session', function(){
         request(app.listen())
         .get('/')
         .set('Cookie', cookie)
-        .expect('Set-Cookie', /express:sess/)
+        .expect('Set-Cookie', /express\.sess/)
         .expect(200, done);
       })
     })
@@ -268,7 +268,7 @@ describe('Cookie Session', function(){
 
         request(app.listen())
         .get('/')
-        .expect('Set-Cookie', /express:sess/)
+        .expect('Set-Cookie', /express\.sess/)
         .expect(200, done);
       })
     })
@@ -301,7 +301,7 @@ describe('Cookie Session', function(){
 
         request(app.listen())
         .get('/')
-        .expect('Set-Cookie', /express:sess/)
+        .expect('Set-Cookie', /express\.sess/)
         .expect(200, done);
       })
     })

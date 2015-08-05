@@ -1,6 +1,7 @@
 2.x
 ===
 
+  * Change default cookie name to `express.sess`
   * Remove the `key` option; use `name` instead
 
 1.2.0 / 2015-07-01
