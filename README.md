@@ -74,7 +74,7 @@ Represents the session for the given request.
 
 Is `true` if the session is new.
 
-#### .populated
+#### .isPopulated
 
 Determine if the session has been populated with data or is empty.
 

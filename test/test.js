@@ -93,6 +93,7 @@ describe('Cookie Session', function(){
       var server = app.listen();
       request(server)
       .post('/')
+      .expect('Set-Cookie', /express\.sess/)
       .expect(204, function(err, res){
         if (err) return done(err);
         var cookie = res.headers['set-cookie'];
@@ -278,12 +279,12 @@ describe('Cookie Session', function(){
         var app = App();
         app.use(function (req, res, next) {
           req.session = {};
-          res.end('lkajsdlkfjasdf');
+          res.end('hello, world');
         })
 
         request(app.listen())
         .get('/')
-        .expect(200, function(err, res){
+        .expect(200, 'hello, world', function (err, res) {
           if (err) return done(err);
           assert.strictEqual(res.header['set-cookie'], undefined);
           done();
@@ -321,11 +322,11 @@ describe('Cookie Session', function(){
   })
 
   describe('req.session', function () {
-    describe('.populated', function () {
+    describe('.isPopulated', function () {
       it('should be false on new session', function (done) {
         var app = App();
         app.use(function (req, res, next) {
-          res.end(String(req.session.populated))
+          res.end(String(req.session.isPopulated))
         })
 
         request(app.listen())
@@ -337,7 +338,7 @@ describe('Cookie Session', function(){
         var app = App();
         app.use(function (req, res, next) {
           req.session.message = 'hello!'
-          res.end(String(req.session.populated))
+          res.end(String(req.session.isPopulated))
         })
 
         request(app.listen())
