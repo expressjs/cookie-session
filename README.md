@@ -70,6 +70,10 @@ The options can also contain any of the follow (for the full list, see
 
 Represents the session for the given request.
 
+#### .isChanged
+
+Is `true` if the session has been changed during the request.
+
 #### .isNew
 
 Is `true` if the session is new.
