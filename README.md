@@ -114,9 +114,11 @@ app.use(cookieSession({
 }))
 
 app.use(function (req, res, next) {
-  var n = req.session.views || 0
-  req.session.views = n++
-  res.end(n + ' views')
+  // Update views
+  req.session.views = (req.session.views || 0) + 1
+
+  // Write response
+  res.end(req.session.views + ' views')
 })
 
 app.listen(3000)
