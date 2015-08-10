@@ -66,33 +66,18 @@ function cookieSession(options) {
 
     req.__defineGetter__('session', function getSession() {
       // already retrieved
-      if (sess) return sess;
-
-      // unset
-      if (false === sess) return null;
-
-      var str = cookies.get(name, req.sessionOptions)
-
-      if (str) {
-        debug('parse %s', str)
-        try {
-          sess = Session.deserialize(req, str)
-        } catch (err) {
-          // backwards compatibility:
-          // create a new session if parsing fails.
-          // new Buffer(string, 'base64') does not seem to crash
-          // when `string` is not base64-encoded.
-          // but `JSON.parse(string)` will crash.
-          if (!(err instanceof SyntaxError)) throw err;
-          sess = Session.create(req)
-        }
-      } else {
-        debug('new session');
-        sess = Session.create(req)
+      if (sess) {
+        return sess
       }
 
-      return sess;
-    });
+      // unset
+      if (sess === false) {
+        return null
+      }
+
+      // get or create session
+      return (sess = tryGetSession(req) || createSession(req))
+    })
 
     req.__defineSetter__('session', function setSession(val) {
       if (val == null) {
@@ -272,6 +257,16 @@ function SessionContext(req) {
 }
 
 /**
+ * Create a new session.
+ * @private
+ */
+
+function createSession(req) {
+  debug('new session')
+  return Session.create(req)
+}
+
+/**
  * Decode the base64 cookie value to an object.
  *
  * @param {String} string
@@ -295,4 +290,30 @@ function decode(string) {
 function encode(body) {
   var str = JSON.stringify(body)
   return new Buffer(str).toString('base64')
+}
+
+/**
+ * Try getting a session from a request.
+ * @private
+ */
+
+function tryGetSession(req) {
+  var cookies = req.sessionCookies
+  var name = req.sessionKey
+  var opts = req.sessionOptions
+
+  var str = cookies.get(name, opts)
+
+  if (!str) {
+    return undefined
+  }
+
+  debug('parse %s', str)
+
+  try {
+    return Session.deserialize(req, str)
+  } catch (err) {
+    if (!(err instanceof SyntaxError)) throw err
+    return undefined
+  }
 }

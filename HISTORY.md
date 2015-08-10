@@ -6,6 +6,7 @@
   * Remove the `key` option; use `name` instead
   * Save all enumerable properties on `req.session`
     - Including `_`-prefixed properties
+  * perf: reduce the scope of try-catch deopt
 
 1.2.0 / 2015-07-01
 ==================

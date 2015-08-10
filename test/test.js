@@ -23,7 +23,7 @@ describe('Cookie Session', function(){
 
         request(app.listen())
         .get('/')
-        .expect(200, done);
+        .expect(200, '', done)
       })
     })
 
@@ -271,6 +271,19 @@ describe('Cookie Session', function(){
         .get('/')
         .expect('Set-Cookie', /express\.sess/)
         .expect(200, done);
+      })
+
+      it('should no longer return a session', function (done) {
+        var app = App()
+        app.use(function (req, res, next) {
+          req.session = null
+          res.end(JSON.stringify(req.session))
+        })
+
+        request(app.listen())
+        .get('/')
+        .expect('Set-Cookie', /express\.sess/)
+        .expect(200, 'null', done)
       })
     })
 
