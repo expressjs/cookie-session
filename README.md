@@ -48,6 +48,12 @@ for key rotation.
 
 A string which will be used as single key if `keys` is not provided.
 
+##### alwaysSetCookie
+
+Always set a `Set-Cookie` header on every response, even if no session
+values have been set or changed. This resets the expiration date. The
+default value is `false`.
+
 ##### Cookie Options
 
 Other options are passed to `cookies.get()` and `cookies.set()` allowing you

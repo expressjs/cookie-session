@@ -7,6 +7,7 @@
   * Save all enumerable properties on `req.session`
     - Including `_`-prefixed properties
   * perf: reduce the scope of try-catch deopt
+  * Add `alwaysSetCookie` option
 
 1.2.0 / 2015-07-01
 ==================

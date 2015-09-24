@@ -51,6 +51,7 @@ function cookieSession(options) {
   if (null == opts.overwrite) opts.overwrite = true;
   if (null == opts.httpOnly) opts.httpOnly = true;
   if (null == opts.signed) opts.signed = true;
+  if (null == opts.alwaysSetCookie) opts.alwaysSetCookie = false;
 
   if (!keys && opts.signed) throw new Error('.keys required.');
 
@@ -97,8 +98,14 @@ function cookieSession(options) {
 
     onHeaders(res, function setHeaders() {
       if (sess === undefined) {
-        // not accessed
-        return;
+        // not accessed - but need to set header anyway, so load session
+        if (opts.alwaysSetCookie) {
+          sess = req.session
+        }
+        // not accessed - don't need to do anything
+        else {
+          return
+        }
       }
 
       try {
@@ -107,6 +114,9 @@ function cookieSession(options) {
           cookies.set(name, '', req.sessionOptions)
         } else if ((!sess.isNew || sess.isPopulated) && sess.isChanged) {
           // save populated or non-new changed session
+          sess.save()
+        }
+        else if (opts.alwaysSetCookie) {
           sess.save()
         }
       } catch (e) {
