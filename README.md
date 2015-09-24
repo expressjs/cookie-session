@@ -148,6 +148,33 @@ app.use(function (req, res, next) {
 // ... your logic here ...
 ```
 
+## Usage Limitations
+
+### Max Cookie Size
+
+Because the entire session object is encoded and stored in a cookie, it is
+possible to exceed the maxium cookie size limits on different browsers. The
+[RFC6265 specification](https://tools.ietf.org/html/rfc6265#section-6.1)
+reccomends that a browser **SHOULD** allow
+
+> At least 4096 bytes per cookie (as measured by the sum of the length of
+> the cookie's name, value, and attributes)
+
+In practice this limit differs slightly across browsers. See a list of
+[browser limits here](http://browsercookielimits.squawky.net/). As a rule
+of thumb **don't exceed 4093 bytes per domain**.
+
+If your session object is large enough to exceed a browser limit when encoded,
+in most cases the browser will refuse to store the cookie. This will cause the
+following requests from the browser to either a) not have any session
+information or b) use old session information that was small enough to not
+exceed the cookie limit.
+
+If you find your session object is hitting these limits, it is best to
+consider if  data in your session should be loaded from a database on the
+server instead of transmitted to/from the browser with every request. Or
+move to an [alternative session strategy](https://github.com/expressjs/session#compatible-session-stores)
+
 ## License
 
 [MIT](LICENSE)
