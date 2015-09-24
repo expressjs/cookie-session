@@ -135,6 +135,20 @@ describe('Cookie Session', function(){
           done();
         })
       })
+
+      it('should Set-Cookie with alwaysSetCookie', function(done) {
+        var app = App({
+          alwaysSetCookie: true,
+        });
+        app.use(function (req, res, next) {
+          res.end('greetings');
+        })
+
+        request(app.listen())
+        .get('/')
+        .expect('Set-Cookie', /express\.sess/)
+        .expect(200, done);
+      })
     })
 
     describe('when accessed and not populated', function(done){
@@ -152,6 +166,21 @@ describe('Cookie Session', function(){
           assert.strictEqual(res.header['set-cookie'], undefined);
           done();
         })
+      })
+
+      it('should Set-Cookie with alwaysSetCookie', function(done) {
+        var app = App({
+          alwaysSetCookie: true,
+        });
+        app.use(function (req, res, next) {
+          req.session;
+          res.end('greetings');
+        })
+
+        request(app.listen())
+        .get('/')
+        .expect('Set-Cookie', /express\.sess/)
+        .expect(200, done);
       })
     })
 
@@ -207,6 +236,21 @@ describe('Cookie Session', function(){
           done();
         })
       })
+
+      it('should Set-Cookie using alwaysSetCookie', function(done){
+        var app = App({
+          alwaysSetCookie: true,
+        });
+        app.use(function (req, res, next) {
+          res.end('aklsjdfklasjdf');
+        })
+
+        request(app.listen())
+        .get('/')
+        .set('Cookie', cookie)
+        .expect('Set-Cookie', /express\.sess/)
+        .expect(200, done);
+      })
     })
 
     describe('when accessed but not changed', function(){
@@ -238,6 +282,22 @@ describe('Cookie Session', function(){
           assert.strictEqual(res.header['set-cookie'], undefined);
           done();
         })
+      })
+
+      it('should Set-Cookie with alwaysSetCookie', function(done){
+        var app = App({
+          alwaysSetCookie: true,
+        });
+        app.use(function (req, res, next) {
+          assert.equal(req.session.message, 'hello');
+          res.end('aklsjdfkljasdf');
+        })
+
+        request(app.listen())
+        .get('/')
+        .set('Cookie', cookie)
+        .expect('Set-Cookie', /express\.sess/)
+        .expect(200, done);
       })
     })
 
