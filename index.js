@@ -232,29 +232,33 @@ Object.defineProperty(Session.prototype, 'isPopulated', {
  * @api public
  */
 
-Session.prototype.__defineGetter__('opts', function(){
-  return this._ctx.sessionOptions;
+Object.defineProperty(Session.prototype, 'opts', {
+  get: function getOpts() {
+    return this._ctx.req.sessionOptions;
+  }
 });
 
-/**
- * Change the session cookie max age
- *
- * @param {Number} val
- * @api public
- */
-Session.prototype.__defineSetter__('maxAge', function(val){
-  this._ctx.sessionOptions.maxage = val;
-  this.save();
-});
+Object.defineProperty(Session.prototype, 'maxAge', {
+  /**
+   * Change the session cookie max age
+   *
+   * @param {Number} val
+   * @api public
+   */
+  set: function setMaxAge(val) {
+    this._ctx.req.sessionOptions.maxage = val;
+    this.save();
+  },
 
-/**
- * Return the session cookie max age
- *
- * @return {Number}
- * @api public
- */
-Session.prototype.__defineGetter__('maxAge', function(){
-  return this._ctx.sessionOptions.maxage;
+  /**
+   * Return the session cookie max age
+   *
+   * @return {Number}
+   * @api public
+   */
+  get: function getMaxAge() {
+    return this._ctx.req.sessionOptions.maxage;
+  }
 });
 
 /**
