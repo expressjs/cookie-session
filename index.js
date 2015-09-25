@@ -226,6 +226,38 @@ Object.defineProperty(Session.prototype, 'isPopulated', {
 })
 
 /**
+ * Return the cookie options
+ *
+ * @return {Object}
+ * @api public
+ */
+
+Session.prototype.__defineGetter__('opts', function(){
+  return this._ctx.sessionOptions;
+});
+
+/**
+ * Change the session cookie max age
+ *
+ * @param {Number} val
+ * @api public
+ */
+Session.prototype.__defineSetter__('maxAge', function(val){
+  this._ctx.sessionOptions.maxage = val;
+  this.save();
+});
+
+/**
+ * Return the session cookie max age
+ *
+ * @return {Number}
+ * @api public
+ */
+Session.prototype.__defineGetter__('maxAge', function(){
+  return this._ctx.sessionOptions.maxage;
+});
+
+/**
  * Save session changes by performing a Set-Cookie.
  * @private
  */

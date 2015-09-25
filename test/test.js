@@ -359,6 +359,20 @@ describe('Cookie Session', function(){
         .expect(200, 'true', done)
       })
     })
+
+    describe('.maxAge=', function() {
+      it('updates maxAge on session', function(done) {
+        var app = App();
+        app.use(function(req, res, next) {
+          req.session.maxAge = 3600
+          res.end(String(req.session.maxAge))
+        })
+
+        request(app.listen())
+        .get('/')
+        .expect(200, '3600', done);
+      })
+    })
   })
 
   describe('req.sessionOptions', function () {
