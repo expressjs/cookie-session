@@ -225,19 +225,6 @@ Object.defineProperty(Session.prototype, 'isPopulated', {
   }
 })
 
-/**
- * Return the cookie options
- *
- * @return {Object}
- * @api public
- */
-
-Object.defineProperty(Session.prototype, 'opts', {
-  get: function getOpts() {
-    return this._ctx.req.sessionOptions;
-  }
-});
-
 Object.defineProperty(Session.prototype, 'maxAge', {
   /**
    * Change the session cookie max age
