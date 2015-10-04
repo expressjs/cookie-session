@@ -15,7 +15,7 @@
     "on-headers": "~1.0.0"
   },
   "devDependencies": {
-    "connect": "3",
+    "connect": "3.4.0",
     "istanbul": "0.3.21",
     "mocha": "2.3.3",
     "supertest": "1.1.0"
