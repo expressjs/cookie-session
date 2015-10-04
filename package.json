@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "connect": "3",
-    "istanbul": "0.3.17",
+    "istanbul": "0.3.21",
     "mocha": "2.2.5",
     "supertest": "1.0.1"
   },
