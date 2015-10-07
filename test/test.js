@@ -21,7 +21,7 @@ describe('Cookie Session', function(){
           res.end();
         })
 
-        request(app.listen())
+        request(app)
         .get('/')
         .expect(200, '', done)
       })
@@ -48,7 +48,7 @@ describe('Cookie Session', function(){
           res.end();
         })
 
-        request(app.listen())
+        request(app)
         .get('/')
         .expect(200, done);
       })
@@ -87,14 +87,13 @@ describe('Cookie Session', function(){
         }
       })
 
-      var server = app.listen();
-      request(server)
+      request(app)
       .post('/')
       .expect(shouldHaveCookie('express.sess'))
       .expect(204, function(err, res){
         if (err) return done(err);
         var cookie = res.headers['set-cookie'];
-        request(server)
+        request(app)
         .get('/')
         .set('Cookie', cookie.join(';'))
         .expect(';', done);
@@ -124,7 +123,7 @@ describe('Cookie Session', function(){
           res.end('greetings');
         })
 
-        request(app.listen())
+        request(app)
         .get('/')
         .expect(shouldNotSetCookies())
         .expect(200, done)
@@ -139,7 +138,7 @@ describe('Cookie Session', function(){
           res.end('greetings');
         })
 
-        request(app.listen())
+        request(app)
         .get('/')
         .expect(shouldNotSetCookies())
         .expect(200, done)
@@ -154,7 +153,7 @@ describe('Cookie Session', function(){
           res.end();
         })
 
-        request(app.listen())
+        request(app)
         .get('/')
         .expect(shouldHaveCookie('express.sess'))
         .expect(200, function(err, res){
@@ -170,7 +169,7 @@ describe('Cookie Session', function(){
           res.end(JSON.stringify(this.session));
         })
 
-        request(app.listen())
+        request(app)
         .get('/')
         .expect(shouldNotSetCookies())
         .expect(200, done)
@@ -186,7 +185,7 @@ describe('Cookie Session', function(){
           res.end('aklsjdfklasjdf');
         })
 
-        request(app.listen())
+        request(app)
         .get('/')
         .set('Cookie', cookie)
         .expect(shouldNotSetCookies())
@@ -202,7 +201,7 @@ describe('Cookie Session', function(){
           res.end('aklsjdfkljasdf');
         })
 
-        request(app.listen())
+        request(app)
         .get('/')
         .set('Cookie', cookie)
         .expect(200, done);
@@ -215,7 +214,7 @@ describe('Cookie Session', function(){
           res.end('aklsjdfkljasdf');
         })
 
-        request(app.listen())
+        request(app)
         .get('/')
         .set('Cookie', cookie)
         .expect(shouldNotSetCookies())
@@ -231,7 +230,7 @@ describe('Cookie Session', function(){
           res.end('klajsdlkfjadsf');
         })
 
-        request(app.listen())
+        request(app)
         .get('/')
         .set('Cookie', cookie)
         .expect(shouldHaveCookie('express.sess'))
@@ -249,7 +248,7 @@ describe('Cookie Session', function(){
           res.end('lkajsdf');
         })
 
-        request(app.listen())
+        request(app)
         .get('/')
         .expect(shouldHaveCookie('express.sess'))
         .expect(200, done);
@@ -262,7 +261,7 @@ describe('Cookie Session', function(){
           res.end(JSON.stringify(req.session))
         })
 
-        request(app.listen())
+        request(app)
         .get('/')
         .expect(shouldHaveCookie('express.sess'))
         .expect(200, 'null', done)
@@ -277,7 +276,7 @@ describe('Cookie Session', function(){
           res.end('hello, world');
         })
 
-        request(app.listen())
+        request(app)
         .get('/')
         .expect(shouldNotSetCookies())
         .expect(200, 'hello, world', done)
@@ -292,7 +291,7 @@ describe('Cookie Session', function(){
           res.end('klajsdfasdf');
         })
 
-        request(app.listen())
+        request(app)
         .get('/')
         .expect(shouldHaveCookie('express.sess'))
         .expect(200, done);
@@ -306,7 +305,7 @@ describe('Cookie Session', function(){
           req.session = 'aklsdjfasdf';
         })
 
-        request(app.listen())
+        request(app)
         .get('/')
         .expect(500, done);
       })
@@ -321,7 +320,7 @@ describe('Cookie Session', function(){
           res.end(String(req.session.isPopulated))
         })
 
-        request(app.listen())
+        request(app)
         .get('/')
         .expect(200, 'false', done)
       })
@@ -333,7 +332,7 @@ describe('Cookie Session', function(){
           res.end(String(req.session.isPopulated))
         })
 
-        request(app.listen())
+        request(app)
         .get('/')
         .expect(200, 'true', done)
       })
