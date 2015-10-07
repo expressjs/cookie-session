@@ -68,11 +68,8 @@ describe('Cookie Session', function(){
 
         request(app)
         .get('/')
-        .expect(200, function(err, res){
-          if (err) return done(err);
-          assert.strictEqual(res.header['set-cookie'], undefined);
-          done();
-        })
+        .expect(shouldNotSetCookies())
+        .expect(200, done)
       })
     })
   })
@@ -93,7 +90,7 @@ describe('Cookie Session', function(){
       var server = app.listen();
       request(server)
       .post('/')
-      .expect('Set-Cookie', /express\.sess/)
+      .expect(shouldHaveCookie('express.sess'))
       .expect(204, function(err, res){
         if (err) return done(err);
         var cookie = res.headers['set-cookie'];
@@ -129,11 +126,8 @@ describe('Cookie Session', function(){
 
         request(app.listen())
         .get('/')
-        .expect(200, function(err, res){
-          if (err) return done(err);
-          assert.strictEqual(res.header['set-cookie'], undefined);
-          done();
-        })
+        .expect(shouldNotSetCookies())
+        .expect(200, done)
       })
     })
 
@@ -147,11 +141,8 @@ describe('Cookie Session', function(){
 
         request(app.listen())
         .get('/')
-        .expect(200, function(err, res){
-          if (err) return done(err);
-          assert.strictEqual(res.header['set-cookie'], undefined);
-          done();
-        })
+        .expect(shouldNotSetCookies())
+        .expect(200, done)
       })
     })
 
@@ -165,7 +156,7 @@ describe('Cookie Session', function(){
 
         request(app.listen())
         .get('/')
-        .expect('Set-Cookie', /express\.sess/)
+        .expect(shouldHaveCookie('express.sess'))
         .expect(200, function(err, res){
           if (err) return done(err);
           cookie = res.header['set-cookie'].join(';');
@@ -181,11 +172,8 @@ describe('Cookie Session', function(){
 
         request(app.listen())
         .get('/')
-        .expect(200, function(err, res){
-          if (err) return done(err);
-          assert.strictEqual(res.header['set-cookie'], undefined);
-          done();
-        })
+        .expect(shouldNotSetCookies())
+        .expect(200, done)
       })
     })
   })
@@ -201,11 +189,8 @@ describe('Cookie Session', function(){
         request(app.listen())
         .get('/')
         .set('Cookie', cookie)
-        .expect(200, function(err, res){
-          if (err) return done(err);
-          assert.strictEqual(res.header['set-cookie'], undefined);
-          done();
-        })
+        .expect(shouldNotSetCookies())
+        .expect(200, done)
       })
     })
 
@@ -233,11 +218,8 @@ describe('Cookie Session', function(){
         request(app.listen())
         .get('/')
         .set('Cookie', cookie)
-        .expect(200, function(err, res){
-          if (err) return done(err);
-          assert.strictEqual(res.header['set-cookie'], undefined);
-          done();
-        })
+        .expect(shouldNotSetCookies())
+        .expect(200, done)
       })
     })
 
@@ -252,7 +234,7 @@ describe('Cookie Session', function(){
         request(app.listen())
         .get('/')
         .set('Cookie', cookie)
-        .expect('Set-Cookie', /express\.sess/)
+        .expect(shouldHaveCookie('express.sess'))
         .expect(200, done);
       })
     })
@@ -269,7 +251,7 @@ describe('Cookie Session', function(){
 
         request(app.listen())
         .get('/')
-        .expect('Set-Cookie', /express\.sess/)
+        .expect(shouldHaveCookie('express.sess'))
         .expect(200, done);
       })
 
@@ -282,7 +264,7 @@ describe('Cookie Session', function(){
 
         request(app.listen())
         .get('/')
-        .expect('Set-Cookie', /express\.sess/)
+        .expect(shouldHaveCookie('express.sess'))
         .expect(200, 'null', done)
       })
     })
@@ -297,11 +279,8 @@ describe('Cookie Session', function(){
 
         request(app.listen())
         .get('/')
-        .expect(200, 'hello, world', function (err, res) {
-          if (err) return done(err);
-          assert.strictEqual(res.header['set-cookie'], undefined);
-          done();
-        });
+        .expect(shouldNotSetCookies())
+        .expect(200, 'hello, world', done)
       })
     })
 
@@ -315,7 +294,7 @@ describe('Cookie Session', function(){
 
         request(app.listen())
         .get('/')
-        .expect('Set-Cookie', /express\.sess/)
+        .expect(shouldHaveCookie('express.sess'))
         .expect(200, done);
       })
     })
@@ -412,4 +391,18 @@ function App(options) {
   var app = connect();
   app.use(session(options));
   return app;
+}
+
+function shouldHaveCookie(name) {
+  return function (res) {
+    assert.ok(res.headers['set-cookie'].some(function (cookie) {
+      return cookie.split('=')[0] === name
+    }), 'should have cookie "' + name + '"')
+  }
+}
+
+function shouldNotSetCookies() {
+  return function (res) {
+    assert.strictEqual(res.headers['set-cookie'], undefined, 'should not set cookies')
+  }
 }
