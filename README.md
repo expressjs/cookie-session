@@ -36,7 +36,7 @@ Cookie session accepts these properties in the options object.
 
 ##### name
 
-The name of the cookie to set, defaults to `express:sess`.
+The name of the cookie to set, defaults to `session`.
 
 ##### keys
 

@@ -1,7 +1,7 @@
 2.x
 ===
 
-  * Change default cookie name to `express.sess`
+  * Change default cookie name to `session`
   * Change `.populated` to `.isPopulated`
   * Remove the `key` option; use `name` instead
   * Save all enumerable properties on `req.session`

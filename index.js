@@ -29,7 +29,7 @@ module.exports = cookieSession
  * @param {object} [options]
  * @param {boolean} [options.httpOnly=true]
  * @param {array} [options.keys]
- * @param {string} [options.name=express:sess] Name of the cookie to use
+ * @param {string} [options.name=session] Name of the cookie to use
  * @param {boolean} [options.overwrite=true]
  * @param {string} [options.secret]
  * @param {boolean} [options.signed=true]
@@ -41,7 +41,7 @@ function cookieSession(options) {
   var opts = options || {}
 
   // cookie name
-  var name = opts.name || 'express.sess'
+  var name = opts.name || 'session'
 
   // secrets
   var keys = opts.keys;

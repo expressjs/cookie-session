@@ -9,6 +9,21 @@ var session = require('..');
 describe('Cookie Session', function(){
   var cookie;
 
+  describe('when options.name = my.session', function(){
+    it('should use my.session for cookie name', function(done){
+      var app = App({ name: 'my.session' })
+      app.use(function (req, res, next) {
+        req.session.message = 'hi'
+        res.end()
+      })
+
+      request(app)
+      .get('/')
+      .expect(shouldHaveCookie('my.session'))
+      .expect(200, done)
+    })
+  })
+
   describe('when options.signed = true', function(){
     describe('when app.keys are set', function(){
       it('should work', function(done){
@@ -89,7 +104,7 @@ describe('Cookie Session', function(){
 
       request(app)
       .post('/')
-      .expect(shouldHaveCookie('express.sess'))
+      .expect(shouldHaveCookie('session'))
       .expect(204, function(err, res){
         if (err) return done(err);
         var cookie = res.headers['set-cookie'];
@@ -103,14 +118,14 @@ describe('Cookie Session', function(){
 
   describe('when the session is invalid', function(){
     it('should create new session', function(done){
-      var app = App({ name: 'session', signed: false });
+      var app = App({ name: 'my.session', signed: false });
       app.use(function (req, res, next) {
         res.end(String(req.session.isNew))
       })
 
       request(app)
       .get('/')
-      .set('Cookie', 'session=bogus')
+      .set('Cookie', 'my.session=bogus')
       .expect(200, 'true', done)
     })
   })
@@ -155,7 +170,7 @@ describe('Cookie Session', function(){
 
         request(app)
         .get('/')
-        .expect(shouldHaveCookie('express.sess'))
+        .expect(shouldHaveCookie('session'))
         .expect(200, function(err, res){
           if (err) return done(err);
           cookie = res.header['set-cookie'].join(';');
@@ -233,7 +248,7 @@ describe('Cookie Session', function(){
         request(app)
         .get('/')
         .set('Cookie', cookie)
-        .expect(shouldHaveCookie('express.sess'))
+        .expect(shouldHaveCookie('session'))
         .expect(200, done);
       })
     })
@@ -250,7 +265,7 @@ describe('Cookie Session', function(){
 
         request(app)
         .get('/')
-        .expect(shouldHaveCookie('express.sess'))
+        .expect(shouldHaveCookie('session'))
         .expect(200, done);
       })
 
@@ -263,7 +278,7 @@ describe('Cookie Session', function(){
 
         request(app)
         .get('/')
-        .expect(shouldHaveCookie('express.sess'))
+        .expect(shouldHaveCookie('session'))
         .expect(200, 'null', done)
       })
     })
@@ -293,7 +308,7 @@ describe('Cookie Session', function(){
 
         request(app)
         .get('/')
-        .expect(shouldHaveCookie('express.sess'))
+        .expect(shouldHaveCookie('session'))
         .expect(200, done);
       })
     })
@@ -341,18 +356,18 @@ describe('Cookie Session', function(){
 
   describe('req.sessionOptions', function () {
     it('should be the session options', function (done) {
-      var app = App({ name: 'session' })
+      var app = App({ name: 'my.session' })
       app.use(function (req, res, next) {
         res.end(String(req.sessionOptions.name))
       })
 
       request(app)
       .get('/')
-      .expect(200, 'session', done)
+      .expect(200, 'my.session', done)
     })
 
     it('should alter the cookie setting', function (done) {
-      var app = App({ maxAge: 3600000, name: 'session' })
+      var app = App({ maxAge: 3600000, name: 'my.session' })
       app.use(function (req, res, next) {
         if (req.url === '/max') {
           req.sessionOptions.maxAge = 6500000
