@@ -7,6 +7,8 @@
   * Save all enumerable properties on `req.session`
     - Including `_`-prefixed properties
   * perf: reduce the scope of try-catch deopt
+  * deps: cookies@0.5.1
+    - Throw on invalid values provided to `Cookie` constructor
 
 1.2.0 / 2015-07-01
 ==================
