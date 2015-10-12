@@ -9,6 +9,8 @@
   * perf: reduce the scope of try-catch deopt
   * deps: cookies@0.5.1
     - Throw on invalid values provided to `Cookie` constructor
+  * deps: on-headers@~1.0.1
+    - perf: enable strict mode
 
 1.2.0 / 2015-07-01
 ==================

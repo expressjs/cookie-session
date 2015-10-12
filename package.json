@@ -12,7 +12,7 @@
   "dependencies": {
     "cookies": "0.5.1",
     "debug": "~2.2.0",
-    "on-headers": "~1.0.0"
+    "on-headers": "~1.0.1"
   },
   "devDependencies": {
     "connect": "3.4.0",
