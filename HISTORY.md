@@ -1,5 +1,5 @@
-2.x
-===
+2.0.0-alpha.1 / 2015-10-11
+==========================
 
   * Change default cookie name to `session`
   * Change `.populated` to `.isPopulated`
