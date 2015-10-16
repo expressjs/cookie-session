@@ -34,6 +34,17 @@ Create a new cookie session middleware with the provided options.
 
 Cookie session accepts these properties in the options object.
 
+For example:
+
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2'],
+  
+  //Cookie Options
+  maxAge: 20*1000,
+  secureProxy: true 
+}));
+
 ##### name
 
 The name of the cookie to set, defaults to `session`.
