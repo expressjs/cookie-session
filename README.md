@@ -113,7 +113,7 @@ To destroy a session simply set it to `null`:
 req.session = null
 ```
 
-## Example
+## Examples
 
 ### Simple view counter example
 
@@ -141,7 +141,7 @@ app.get('/', function (req, res, next) {
 app.listen(3000)
 ```
 
-## Per-user sticky max age
+### Per-user sticky max age
 
 ```js
 var cookieSession = require('cookie-session')
