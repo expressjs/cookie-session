@@ -124,7 +124,7 @@ app.use(function (req, res, next) {
 app.listen(3000)
 ```
 
-## Per-user sticky max age
+### Per-user sticky max age
 
 ```js
 var cookieSession = require('cookie-session')
