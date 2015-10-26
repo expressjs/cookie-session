@@ -166,6 +166,34 @@ app.use(function (req, res, next) {
 // ... your logic here ...
 ```
 
+### Extending the session expiration
+
+This module does not send a `Set-Cookie` header if the contents of the session
+have not changed. This means that to extend the expiration of a session in the
+user's browser (in response to user activity, for example) some kind of
+modification to the session needs be made.
+
+```js
+var cookieSession = require('cookie-session')
+var express = require('express')
+
+var app = express()
+
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2']
+}))
+
+// Update a value in the cookie so that the set-cookie will be sent.
+// Only changes every minute so that it's not sent with every request.
+app.use(function (req, res, next) {
+  req.session.nowInMinutes = Date.now() / 60e3
+  next()
+})
+
+// ... your logic here ...
+```
+
 ## Usage Limitations
 
 ### Max Cookie Size
