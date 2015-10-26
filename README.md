@@ -171,6 +171,7 @@ app.use(function (req, res, next) {
   req.session.nowInMinutes = Date.now() / 60e3
 })
 
+// ... your logic here ...
 ```
 
 ## Usage Limitations
