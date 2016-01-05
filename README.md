@@ -169,6 +169,7 @@ app.use(cookieSession({
 // Only changes every minute so that it's not sent with every request.
 app.use(function (req, res, next) {
   req.session.nowInMinutes = Date.now() / 60e3
+  next()
 })
 
 // ... your logic here ...
