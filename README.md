@@ -143,6 +143,7 @@ app.use(cookieSession({
 // have a different value than the default.
 app.use(function (req, res, next) {
   req.sessionOptions.maxAge = req.session.maxAge || req.sessionOptions.maxAge
+  next()
 })
 
 // ... your logic here ...
