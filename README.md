@@ -8,12 +8,6 @@
 
   Simple cookie-based session middleware.
 
-## Semantics
-
-  This module provides "guest" sessions, meaning any visitor will have a session,
-  authenticated or not. If a session is _new_ a `Set-Cookie` will be produced regardless
-  of populating the session.
-
 ## Install
 
 ```bash
@@ -28,7 +22,16 @@ var cookieSession = require('cookie-session')
 
 ### cookieSession(options)
 
-Create a new cookie session middleware with the provided options.
+Create a new cookie session middleware with the provided options. This middleware
+will attach the property `session` to `req`, which provides an object representing
+the loaded session. This session is either a new session if no valid session was
+provided in the request, or a loaded session from the request.
+
+The middleware will automatically add a `Set-Cookie` header to the response if the
+contents of `req.session` were altered. _Note_ that no `Set-Cookie` header will be
+in the response (and thus no session created for a specific user) unless there are
+contents in the session, so be sure to add something to `req.session` as soon as
+you have identifying information to store for the session.
 
 #### Options
 
