@@ -37,6 +37,17 @@ you have identifying information to store for the session.
 
 Cookie session accepts these properties in the options object.
 
+For example:
+
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2'],
+  
+  //Cookie Options
+  maxAge: 20*1000,
+  secureProxy: true 
+}));
+
 ##### name
 
 The name of the cookie to set, defaults to `session`.
