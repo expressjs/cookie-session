@@ -2,6 +2,9 @@ unreleased
 ==========
 
   * deps: cookies@0.6.1
+  * deps: debug@2.3.2
+    - Fix error when running under React Native
+    - deps: ms@0.7.2
 
 2.0.0-alpha.1 / 2015-10-11
 ==========================
