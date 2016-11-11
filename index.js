@@ -12,9 +12,9 @@
  * @private
  */
 
-var debug = require('debug')('cookie-session');
-var Cookies = require('cookies');
-var onHeaders = require('on-headers');
+var debug = require('debug')('cookie-session')
+var Cookies = require('cookies')
+var onHeaders = require('on-headers')
 
 /**
  * Module exports.
@@ -37,26 +37,26 @@ module.exports = cookieSession
  * @public
  */
 
-function cookieSession(options) {
+function cookieSession (options) {
   var opts = options || {}
 
   // cookie name
   var name = opts.name || 'session'
 
   // secrets
-  var keys = opts.keys;
-  if (!keys && opts.secret) keys = [opts.secret];
+  var keys = opts.keys
+  if (!keys && opts.secret) keys = [opts.secret]
 
   // defaults
-  if (null == opts.overwrite) opts.overwrite = true;
-  if (null == opts.httpOnly) opts.httpOnly = true;
-  if (null == opts.signed) opts.signed = true;
+  if (opts.overwrite == null) opts.overwrite = true
+  if (opts.httpOnly == null) opts.httpOnly = true
+  if (opts.signed == null) opts.signed = true
 
-  if (!keys && opts.signed) throw new Error('.keys required.');
+  if (!keys && opts.signed) throw new Error('.keys required.')
 
-  debug('session options %j', opts);
+  debug('session options %j', opts)
 
-  return function _cookieSession(req, res, next) {
+  return function _cookieSession (req, res, next) {
     var cookies = req.sessionCookies = new Cookies(req, res, {
       keys: keys
     })
@@ -66,7 +66,7 @@ function cookieSession(options) {
     req.sessionOptions = Object.create(opts)
     req.sessionKey = name
 
-    req.__defineGetter__('session', function getSession() {
+    req.__defineGetter__('session', function getSession () {
       // already retrieved
       if (sess) {
         return sess
@@ -81,7 +81,7 @@ function cookieSession(options) {
       return (sess = tryGetSession(req) || createSession(req))
     })
 
-    req.__defineSetter__('session', function setSession(val) {
+    req.__defineSetter__('session', function setSession (val) {
       if (val == null) {
         // unset session
         sess = false
@@ -97,10 +97,10 @@ function cookieSession(options) {
       throw new Error('req.session can only be set as null or an object.')
     })
 
-    onHeaders(res, function setHeaders() {
+    onHeaders(res, function setHeaders () {
       if (sess === undefined) {
         // not accessed
-        return;
+        return
       }
 
       try {
@@ -114,9 +114,9 @@ function cookieSession(options) {
       } catch (e) {
         debug('error saving session %s', e.message)
       }
-    });
+    })
 
-    next();
+    next()
   }
 };
 
@@ -128,7 +128,7 @@ function cookieSession(options) {
  * @private
  */
 
-function Session(ctx, obj) {
+function Session (ctx, obj) {
   Object.defineProperty(this, '_ctx', {
     value: ctx
   })
@@ -145,7 +145,7 @@ function Session(ctx, obj) {
  * @private
  */
 
-Session.create = function create(req, obj) {
+Session.create = function create (req, obj) {
   var ctx = new SessionContext(req)
   return new Session(ctx, obj)
 }
@@ -155,7 +155,7 @@ Session.create = function create(req, obj) {
  * @private
  */
 
-Session.deserialize = function deserialize(req, str) {
+Session.deserialize = function deserialize (req, str) {
   var ctx = new SessionContext(req)
   var obj = decode(str)
 
@@ -170,7 +170,7 @@ Session.deserialize = function deserialize(req, str) {
  * @private
  */
 
-Session.serialize = function serialize(sess) {
+Session.serialize = function serialize (sess) {
   return encode(sess)
 }
 
@@ -182,7 +182,7 @@ Session.serialize = function serialize(sess) {
  */
 
 Object.defineProperty(Session.prototype, 'isChanged', {
-  get: function getIsChanged() {
+  get: function getIsChanged () {
     return this._ctx._new || this._ctx._val !== Session.serialize(this)
   }
 })
@@ -195,7 +195,7 @@ Object.defineProperty(Session.prototype, 'isChanged', {
  */
 
 Object.defineProperty(Session.prototype, 'isNew', {
-  get: function getIsNew() {
+  get: function getIsNew () {
     return this._ctx._new
   }
 })
@@ -209,7 +209,7 @@ Object.defineProperty(Session.prototype, 'isNew', {
  */
 
 Object.defineProperty(Session.prototype, 'length', {
-  get: function getLength() {
+  get: function getLength () {
     return Object.keys(this).length
   }
 })
@@ -222,7 +222,7 @@ Object.defineProperty(Session.prototype, 'length', {
  */
 
 Object.defineProperty(Session.prototype, 'isPopulated', {
-  get: function getIsPopulated() {
+  get: function getIsPopulated () {
     return Boolean(this.length)
   }
 })
@@ -232,7 +232,7 @@ Object.defineProperty(Session.prototype, 'isPopulated', {
  * @private
  */
 
-Session.prototype.save = function save() {
+Session.prototype.save = function save () {
   var ctx = this._ctx
   var val = Session.serialize(this)
 
@@ -251,7 +251,7 @@ Session.prototype.save = function save() {
  * @private
  */
 
-function SessionContext(req) {
+function SessionContext (req) {
   this.req = req
 
   this._new = true
@@ -263,7 +263,7 @@ function SessionContext(req) {
  * @private
  */
 
-function createSession(req) {
+function createSession (req) {
   debug('new session')
   return Session.create(req)
 }
@@ -276,9 +276,9 @@ function createSession(req) {
  * @private
  */
 
-function decode(string) {
-  var body = new Buffer(string, 'base64').toString('utf8');
-  return JSON.parse(body);
+function decode (string) {
+  var body = new Buffer(string, 'base64').toString('utf8')
+  return JSON.parse(body)
 }
 
 /**
@@ -289,7 +289,7 @@ function decode(string) {
  * @private
  */
 
-function encode(body) {
+function encode (body) {
   var str = JSON.stringify(body)
   return new Buffer(str).toString('base64')
 }
@@ -299,7 +299,7 @@ function encode(body) {
  * @private
  */
 
-function tryGetSession(req) {
+function tryGetSession (req) {
   var cookies = req.sessionCookies
   var name = req.sessionKey
   var opts = req.sessionOptions

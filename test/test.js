@@ -1,16 +1,16 @@
 
-process.env.NODE_ENV = 'test';
+process.env.NODE_ENV = 'test'
 
-var assert = require('assert');
-var connect = require('connect');
-var request = require('supertest');
-var session = require('..');
+var assert = require('assert')
+var connect = require('connect')
+var request = require('supertest')
+var session = require('..')
 
-describe('Cookie Session', function(){
-  var cookie;
+describe('Cookie Session', function () {
+  var cookie
 
-  describe('when options.name = my.session', function(){
-    it('should use my.session for cookie name', function(done){
+  describe('when options.name = my.session', function () {
+    it('should use my.session for cookie name', function (done) {
       var app = App({ name: 'my.session' })
       app.use(function (req, res, next) {
         req.session.message = 'hi'
@@ -24,16 +24,16 @@ describe('Cookie Session', function(){
     })
   })
 
-  describe('when options.signed = true', function(){
-    describe('when app.keys are set', function(){
-      it('should work', function(done){
-        var app = connect();
+  describe('when options.signed = true', function () {
+    describe('when app.keys are set', function () {
+      it('should work', function (done) {
+        var app = connect()
         app.use(session({
           keys: ['a', 'b']
-        }));
+        }))
         app.use(function (req, res, next) {
-          req.session.message = 'hi';
-          res.end();
+          req.session.message = 'hi'
+          res.end()
         })
 
         request(app)
@@ -42,42 +42,42 @@ describe('Cookie Session', function(){
       })
     })
 
-    describe('when app.keys are not set', function(){
-      it('should throw', function(){
+    describe('when app.keys are not set', function () {
+      it('should throw', function () {
         assert.throws(function () {
-          session();
-        });
+          session()
+        })
       })
     })
   })
 
-  describe('when options.signed = false', function(){
-    describe('when app.keys are not set', function(){
-      it('should work', function(done){
-        var app = connect();
+  describe('when options.signed = false', function () {
+    describe('when app.keys are not set', function () {
+      it('should work', function (done) {
+        var app = connect()
         app.use(session({
           signed: false
-        }));
+        }))
         app.use(function (req, res, next) {
-          req.session.message = 'hi';
-          res.end();
+          req.session.message = 'hi'
+          res.end()
         })
 
         request(app)
         .get('/')
-        .expect(200, done);
+        .expect(200, done)
       })
     })
   })
 
-  describe('when options.secure = true', function(){
-    describe('when connection not secured', function(){
-      it('should not Set-Cookie', function(done) {
-        var app = App({ secure: true });
+  describe('when options.secure = true', function () {
+    describe('when connection not secured', function () {
+      it('should not Set-Cookie', function (done) {
+        var app = App({ secure: true })
         app.use(function (req, res, next) {
-          process.nextTick(function(){
-            req.session.message = 'hello!';
-            res.end('greetings');
+          process.nextTick(function () {
+            req.session.message = 'hello!'
+            res.end('greetings')
           })
         })
 
@@ -89,36 +89,36 @@ describe('Cookie Session', function(){
     })
   })
 
-  describe('when the session contains a ;', function(){
-    it('should still work', function(done){
-      var app = App();
+  describe('when the session contains a ;', function () {
+    it('should still work', function (done) {
+      var app = App()
       app.use(function (req, res, next) {
         if (req.method === 'POST') {
-          req.session.string = ';';
-          res.statusCode = 204;
-          res.end();
+          req.session.string = ';'
+          res.statusCode = 204
+          res.end()
         } else {
-          res.end(req.session.string);
+          res.end(req.session.string)
         }
       })
 
       request(app)
       .post('/')
       .expect(shouldHaveCookie('session'))
-      .expect(204, function(err, res){
-        if (err) return done(err);
-        var cookie = res.headers['set-cookie'];
+      .expect(204, function (err, res) {
+        if (err) return done(err)
+        var cookie = res.headers['set-cookie']
         request(app)
         .get('/')
         .set('Cookie', cookie.join(';'))
-        .expect(';', done);
+        .expect(';', done)
       })
     })
   })
 
-  describe('when the session is invalid', function(){
-    it('should create new session', function(done){
-      var app = App({ name: 'my.session', signed: false });
+  describe('when the session is invalid', function () {
+    it('should create new session', function (done) {
+      var app = App({ name: 'my.session', signed: false })
       app.use(function (req, res, next) {
         res.end(String(req.session.isNew))
       })
@@ -130,12 +130,12 @@ describe('Cookie Session', function(){
     })
   })
 
-  describe('new session', function(){
-    describe('when not accessed', function(){
-      it('should not Set-Cookie', function(done) {
-        var app = App();
+  describe('new session', function () {
+    describe('when not accessed', function () {
+      it('should not Set-Cookie', function (done) {
+        var app = App()
         app.use(function (req, res, next) {
-          res.end('greetings');
+          res.end('greetings')
         })
 
         request(app)
@@ -145,12 +145,12 @@ describe('Cookie Session', function(){
       })
     })
 
-    describe('when accessed and not populated', function(done){
-      it('should not Set-Cookie', function(done) {
-        var app = App();
+    describe('when accessed and not populated', function (done) {
+      it('should not Set-Cookie', function (done) {
+        var app = App()
         app.use(function (req, res, next) {
-          req.session;
-          res.end('greetings');
+          req.session
+          res.end('greetings')
         })
 
         request(app)
@@ -160,28 +160,28 @@ describe('Cookie Session', function(){
       })
     })
 
-    describe('when populated', function(done){
-      it('should Set-Cookie', function(done){
-        var app = App();
+    describe('when populated', function (done) {
+      it('should Set-Cookie', function (done) {
+        var app = App()
         app.use(function (req, res, next) {
-          req.session.message = 'hello';
-          res.end();
+          req.session.message = 'hello'
+          res.end()
         })
 
         request(app)
         .get('/')
         .expect(shouldHaveCookie('session'))
-        .expect(200, function(err, res){
-          if (err) return done(err);
-          cookie = res.header['set-cookie'].join(';');
-          done();
+        .expect(200, function (err, res) {
+          if (err) return done(err)
+          cookie = res.header['set-cookie'].join(';')
+          done()
         })
       })
 
-      it('should not Set-Cookie', function(done){
-        var app = App();
+      it('should not Set-Cookie', function (done) {
+        var app = App()
         app.use(function (req, res, next) {
-          res.end(JSON.stringify(this.session));
+          res.end(JSON.stringify(this.session))
         })
 
         request(app)
@@ -192,12 +192,12 @@ describe('Cookie Session', function(){
     })
   })
 
-  describe('saved session', function(){
-    describe('when not accessed', function(){
-      it('should not Set-Cookie', function(done){
-        var app = App();
+  describe('saved session', function () {
+    describe('when not accessed', function () {
+      it('should not Set-Cookie', function (done) {
+        var app = App()
         app.use(function (req, res, next) {
-          res.end('aklsjdfklasjdf');
+          res.end('aklsjdfklasjdf')
         })
 
         request(app)
@@ -208,25 +208,25 @@ describe('Cookie Session', function(){
       })
     })
 
-    describe('when accessed but not changed', function(){
-      it('should be the same session', function(done){
-        var app = App();
+    describe('when accessed but not changed', function () {
+      it('should be the same session', function (done) {
+        var app = App()
         app.use(function (req, res, next) {
-          assert.equal(req.session.message, 'hello');
-          res.end('aklsjdfkljasdf');
+          assert.equal(req.session.message, 'hello')
+          res.end('aklsjdfkljasdf')
         })
 
         request(app)
         .get('/')
         .set('Cookie', cookie)
-        .expect(200, done);
+        .expect(200, done)
       })
 
-      it('should not Set-Cookie', function(done){
-        var app = App();
+      it('should not Set-Cookie', function (done) {
+        var app = App()
         app.use(function (req, res, next) {
-          assert.equal(req.session.message, 'hello');
-          res.end('aklsjdfkljasdf');
+          assert.equal(req.session.message, 'hello')
+          res.end('aklsjdfkljasdf')
         })
 
         request(app)
@@ -237,36 +237,36 @@ describe('Cookie Session', function(){
       })
     })
 
-    describe('when accessed and changed', function(){
-      it('should Set-Cookie', function(done){
-        var app = App();
+    describe('when accessed and changed', function () {
+      it('should Set-Cookie', function (done) {
+        var app = App()
         app.use(function (req, res, next) {
-          req.session.money = '$$$';
-          res.end('klajsdlkfjadsf');
+          req.session.money = '$$$'
+          res.end('klajsdlkfjadsf')
         })
 
         request(app)
         .get('/')
         .set('Cookie', cookie)
         .expect(shouldHaveCookie('session'))
-        .expect(200, done);
+        .expect(200, done)
       })
     })
   })
 
-  describe('when session = ', function(){
-    describe('null', function(){
-      it('should expire the session', function(done){
-        var app = App();
+  describe('when session = ', function () {
+    describe('null', function () {
+      it('should expire the session', function (done) {
+        var app = App()
         app.use(function (req, res, next) {
-          req.session = null;
-          res.end('lkajsdf');
+          req.session = null
+          res.end('lkajsdf')
         })
 
         request(app)
         .get('/')
         .expect(shouldHaveCookie('session'))
-        .expect(200, done);
+        .expect(200, done)
       })
 
       it('should no longer return a session', function (done) {
@@ -283,12 +283,12 @@ describe('Cookie Session', function(){
       })
     })
 
-    describe('{}', function(){
-      it('should not Set-Cookie', function(done){
-        var app = App();
+    describe('{}', function () {
+      it('should not Set-Cookie', function (done) {
+        var app = App()
         app.use(function (req, res, next) {
-          req.session = {};
-          res.end('hello, world');
+          req.session = {}
+          res.end('hello, world')
         })
 
         request(app)
@@ -298,31 +298,31 @@ describe('Cookie Session', function(){
       })
     })
 
-    describe('{a: b}', function(){
-      it('should create a session', function(done){
-        var app = App();
+    describe('{a: b}', function () {
+      it('should create a session', function (done) {
+        var app = App()
         app.use(function (req, res, next) {
-          req.session = { message: 'hello' };
-          res.end('klajsdfasdf');
+          req.session = { message: 'hello' }
+          res.end('klajsdfasdf')
         })
 
         request(app)
         .get('/')
         .expect(shouldHaveCookie('session'))
-        .expect(200, done);
+        .expect(200, done)
       })
     })
 
-    describe('anything else', function(){
-      it('should throw', function(done){
-        var app = App();
+    describe('anything else', function () {
+      it('should throw', function (done) {
+        var app = App()
         app.use(function (req, res, next) {
-          req.session = 'aklsdjfasdf';
+          req.session = 'aklsdjfasdf'
         })
 
         request(app)
         .get('/')
-        .expect(500, done);
+        .expect(500, done)
       })
     })
   })
@@ -330,7 +330,7 @@ describe('Cookie Session', function(){
   describe('req.session', function () {
     describe('.isPopulated', function () {
       it('should be false on new session', function (done) {
-        var app = App();
+        var app = App()
         app.use(function (req, res, next) {
           res.end(String(req.session.isPopulated))
         })
@@ -341,7 +341,7 @@ describe('Cookie Session', function(){
       })
 
       it('should be true after adding property', function (done) {
-        var app = App();
+        var app = App()
         app.use(function (req, res, next) {
           req.session.message = 'hello!'
           res.end(String(req.session.isPopulated))
@@ -399,15 +399,15 @@ describe('Cookie Session', function(){
   })
 })
 
-function App(options) {
-  options = options || {};
-  options.keys = ['a', 'b'];
-  var app = connect();
-  app.use(session(options));
-  return app;
+function App (options) {
+  options = options || {}
+  options.keys = ['a', 'b']
+  var app = connect()
+  app.use(session(options))
+  return app
 }
 
-function shouldHaveCookie(name) {
+function shouldHaveCookie (name) {
   return function (res) {
     assert.ok(res.headers['set-cookie'].some(function (cookie) {
       return cookie.split('=')[0] === name
@@ -415,7 +415,7 @@ function shouldHaveCookie(name) {
   }
 }
 
-function shouldNotSetCookies() {
+function shouldNotSetCookies () {
   return function (res) {
     assert.strictEqual(res.headers['set-cookie'], undefined, 'should not set cookies')
   }

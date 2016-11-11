@@ -18,6 +18,17 @@ $ npm install cookie-session
 
 ```js
 var cookieSession = require('cookie-session')
+var express = require('express')
+
+var app = express()
+
+app.use(cookieSession({
+  name: 'session',
+  keys: [/* secret keys */],
+
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
 ```
 
 ### cookieSession(options)
@@ -36,16 +47,6 @@ you have identifying information to store for the session.
 #### Options
 
 Cookie session accepts these properties in the options object.
-
-```js
-app.use(cookieSession({
-  name: 'session',
-  keys: [/* secret keys */],
-
-  // Cookie Options
-  maxAge: 24 * 60 * 60 * 1000 // 24 hours
-}))
-```
 
 ##### name
 
@@ -102,9 +103,9 @@ altered to change cookie setting behavior on a per-request basis.
 
 ### Destroying a session
 
-  To destroy a session simply set it to `null`:
+To destroy a session simply set it to `null`:
 
-```js
+```
 req.session = null
 ```
 
