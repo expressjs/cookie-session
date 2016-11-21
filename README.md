@@ -172,7 +172,7 @@ app.use(function (req, res, next) {
 Because the entire session object is encoded and stored in a cookie, it is
 possible to exceed the maxium cookie size limits on different browsers. The
 [RFC6265 specification](https://tools.ietf.org/html/rfc6265#section-6.1)
-reccomends that a browser **SHOULD** allow
+recommends that a browser **SHOULD** allow
 
 > At least 4096 bytes per cookie (as measured by the sum of the length of
 > the cookie's name, value, and attributes)
