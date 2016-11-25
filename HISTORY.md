@@ -1,6 +1,8 @@
 unreleased
 ==========
 
+  * deps: cookies@0.6.2
+    - deps: keygrip@~1.0.1
   * deps: debug@2.3.3
 
 2.0.0-alpha.2 / 2016-11-10
