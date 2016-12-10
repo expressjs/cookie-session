@@ -141,7 +141,7 @@ app.get('/', function (req, res, next) {
 app.listen(3000)
 ```
 
-## Per-user sticky max age
+### Per-user sticky max age
 
 ```js
 var cookieSession = require('cookie-session')
@@ -160,6 +160,34 @@ app.use(cookieSession({
 // have a different value than the default.
 app.use(function (req, res, next) {
   req.sessionOptions.maxAge = req.session.maxAge || req.sessionOptions.maxAge
+  next()
+})
+
+// ... your logic here ...
+```
+
+### Extending the session
+
+Cookie session does not send an updated cookie if the contents of the session
+haven't changed. Hence, to extend the length of a session (in response to user
+activity) some kind of modification to the session should be made.
+
+```js
+var cookieSession = require('cookie-session')
+var express = require('express')
+
+var app = express()
+
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2']
+}))
+
+// Update a value in the cookie so that the set-cookie will be sent.
+// Only changes every minute so that it's not sent with every request.
+app.use(function (req, res, next) {
+  req.session.nowInMinutes = Date.now() / 60e3
+  next()
 })
 
 // ... your logic here ...
