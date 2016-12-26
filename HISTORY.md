@@ -3,7 +3,11 @@ unreleased
 
   * deps: cookies@0.6.2
     - deps: keygrip@~1.0.1
-  * deps: debug@2.3.3
+  * deps: debug@2.5.1
+    - Allow colors in workers
+    - Fix error when running under React Native
+    - Use same color for same namespace
+    - deps: ms@0.7.2
 
 2.0.0-alpha.2 / 2016-11-10
 ==========================
