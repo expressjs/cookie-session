@@ -4,8 +4,9 @@ unreleased
   * Use `Object.defineProperty` instead of deprecated `__define*__`
   * deps: cookies@0.6.2
     - deps: keygrip@~1.0.1
-  * deps: debug@2.5.1
+  * deps: debug@2.6.1
     - Allow colors in workers
+    - Deprecated `DEBUG_FD` environment variable set to `3` or higher
     - Fix error when running under React Native
     - Use same color for same namespace
     - deps: ms@0.7.2
