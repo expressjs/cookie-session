@@ -66,7 +66,15 @@ function cookieSession (options) {
     req.sessionOptions = Object.create(opts)
     req.sessionKey = name
 
-    req.__defineGetter__('session', function getSession () {
+    // define req.session getter / setter
+    Object.defineProperty(req, 'session', {
+      configurable: true,
+      enumerable: true,
+      get: getSession,
+      set: setSession
+    })
+
+    function getSession () {
       // already retrieved
       if (sess) {
         return sess
@@ -79,9 +87,9 @@ function cookieSession (options) {
 
       // get or create session
       return (sess = tryGetSession(req) || createSession(req))
-    })
+    }
 
-    req.__defineSetter__('session', function setSession (val) {
+    function setSession (val) {
       if (val == null) {
         // unset session
         sess = false
@@ -95,7 +103,7 @@ function cookieSession (options) {
       }
 
       throw new Error('req.session can only be set as null or an object.')
-    })
+    }
 
     onHeaders(res, function setHeaders () {
       if (sess === undefined) {

@@ -1,6 +1,7 @@
 unreleased
 ==========
 
+  * Use `Object.defineProperty` instead of deprecated `__define*__`
   * deps: cookies@0.6.2
     - deps: keygrip@~1.0.1
   * deps: debug@2.5.1
