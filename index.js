@@ -57,12 +57,13 @@ function cookieSession (options) {
   debug('session options %j', opts)
 
   return function _cookieSession (req, res, next) {
-    var cookies = req.sessionCookies = new Cookies(req, res, {
+    var cookies = new Cookies(req, res, {
       keys: keys
     })
     var sess
 
     // to pass to Session()
+    req.sessionCookies = cookies
     req.sessionOptions = Object.create(opts)
     req.sessionKey = name
 
