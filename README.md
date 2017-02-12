@@ -66,7 +66,7 @@ A string which will be used as single key if `keys` is not provided.
 Other options are passed to `cookies.get()` and `cookies.set()` allowing you
 to control security, domain, path, and signing among other settings.
 
-The options can also contain any of the follow (for the full list, see
+The options can also contain any of the following (for the full list, see
 [cookies module documentation](https://www.npmjs.org/package/cookies#readme):
 
   - `maxAge`: a number representing the milliseconds from `Date.now()` for expiry
