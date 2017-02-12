@@ -1,5 +1,5 @@
-unreleased
-==========
+2.0.0-alpha.3 / 2017-02-12
+==========================
 
   * Use `Object.defineProperty` instead of deprecated `__define*__`
   * deps: cookies@0.6.2
