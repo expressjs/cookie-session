@@ -37,6 +37,43 @@ describe('Cookie Session', function () {
     })
   })
 
+  describe('"overwrite" option', function () {
+    it('should default to "true"', function (done) {
+      var app = App()
+      app.use(function (req, res, next) {
+        res.setHeader('Set-Cookie', [
+          'session=foo; path=/fake',
+          'foo=bar'
+        ])
+        req.session.message = 'hi'
+        res.end(String(req.sessionOptions.overwrite))
+      })
+
+      request(app)
+      .get('/')
+      .expect('Set-Cookie', /foo=bar/)
+      .expect(200, 'true', done)
+    })
+
+    it('should use given "false"', function (done) {
+      var app = App({ overwrite: false })
+      app.use(function (req, res, next) {
+        res.setHeader('Set-Cookie', [
+          'session=foo; path=/fake',
+          'foo=bar'
+        ])
+        req.session.message = 'hi'
+        res.end(String(req.sessionOptions.overwrite))
+      })
+
+      request(app)
+      .get('/')
+      .expect('Set-Cookie', /foo=bar/)
+      .expect('Set-Cookie', /session=foo/)
+      .expect(200, 'false', done)
+    })
+  })
+
   describe('when options.name = my.session', function () {
     it('should use my.session for cookie name', function (done) {
       var app = App({ name: 'my.session' })
