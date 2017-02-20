@@ -25,7 +25,7 @@ describe('Cookie Session', function () {
   })
 
   describe('when options.signed = true', function () {
-    describe('when app.keys are set', function () {
+    describe('when options.keys are set', function () {
       it('should work', function (done) {
         var app = connect()
         app.use(session({
@@ -42,7 +42,7 @@ describe('Cookie Session', function () {
       })
     })
 
-    describe('when app.keys are not set', function () {
+    describe('when options.keys are not set', function () {
       it('should throw', function () {
         assert.throws(function () {
           session()
