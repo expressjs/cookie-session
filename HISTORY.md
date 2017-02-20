@@ -2,6 +2,9 @@ unreleased
 ==========
 
   * Drop support for Node.js 0.8
+  * deps: cookies@0.7.0
+    - Add `sameSite` option for SameSite cookie support
+    - pref: enable strict mode
 
 2.0.0-alpha.3 / 2017-02-12
 ==========================
