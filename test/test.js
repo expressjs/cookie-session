@@ -9,6 +9,34 @@ var session = require('..')
 describe('Cookie Session', function () {
   var cookie
 
+  describe('"httpOnly" option', function () {
+    it('should default to "true"', function (done) {
+      var app = App()
+      app.use(function (req, res, next) {
+        req.session.message = 'hi'
+        res.end(String(req.sessionOptions.httpOnly))
+      })
+
+      request(app)
+      .get('/')
+      .expect('Set-Cookie', /httpOnly/i)
+      .expect(200, 'true', done)
+    })
+
+    it('should use given "false"', function (done) {
+      var app = App({ httpOnly: false })
+      app.use(function (req, res, next) {
+        req.session.message = 'hi'
+        res.end(String(req.sessionOptions.httpOnly))
+      })
+
+      request(app)
+      .get('/')
+      .expect('Set-Cookie', /(?!httpOnly)/i)
+      .expect(200, 'false', done)
+    })
+  })
+
   describe('when options.name = my.session', function () {
     it('should use my.session for cookie name', function (done) {
       var app = App({ name: 'my.session' })
