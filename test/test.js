@@ -42,6 +42,23 @@ describe('Cookie Session', function () {
       })
     })
 
+    describe('when options.secret is set', function () {
+      it('should work', function (done) {
+        var app = connect()
+        app.use(session({
+          secret: 'a'
+        }))
+        app.use(function (req, res, next) {
+          req.session.message = 'hi'
+          res.end()
+        })
+
+        request(app)
+        .get('/')
+        .expect(200, '', done)
+      })
+    })
+
     describe('when options.keys are not set', function () {
       it('should throw', function () {
         assert.throws(function () {
