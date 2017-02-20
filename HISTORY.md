@@ -1,5 +1,5 @@
-unreleased
-==========
+2.0.0-beta.1 / 2017-02-19
+==========================
 
   * Drop support for Node.js 0.8
   * deps: cookies@0.7.0
