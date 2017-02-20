@@ -1,3 +1,8 @@
+unreleased
+==========
+
+  * Drop support for Node.js 0.8
+
 2.0.0-alpha.3 / 2017-02-12
 ==========================
 
