@@ -324,7 +324,6 @@ function tryGetSession (req) {
   try {
     return Session.deserialize(req, str)
   } catch (err) {
-    if (!(err instanceof SyntaxError)) throw err
     return undefined
   }
 }

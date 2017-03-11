@@ -1,3 +1,8 @@
+unreleased
+==========
+
+  * Create new session for all types of invalid sessions
+
 2.0.0-beta.1 / 2017-02-19
 ==========================
 
