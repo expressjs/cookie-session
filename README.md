@@ -188,7 +188,7 @@ app.use(cookieSession({
 // Update a value in the cookie so that the set-cookie will be sent.
 // Only changes every minute so that it's not sent with every request.
 app.use(function (req, res, next) {
-  req.session.nowInMinutes = Date.now() / 60e3
+  req.session.nowInMinutes = Math.floor(Date.now() / 60e3)
   next()
 })
 
