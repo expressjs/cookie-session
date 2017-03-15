@@ -231,8 +231,8 @@ describe('Cookie Session', function () {
       it('should not Set-Cookie', function (done) {
         var app = App()
         app.use(function (req, res, next) {
-          req.session
-          res.end('greetings')
+          var sess = req.session
+          res.end(JSON.stringify(sess))
         })
 
         request(app)
