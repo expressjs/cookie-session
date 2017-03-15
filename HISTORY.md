@@ -2,6 +2,8 @@ unreleased
 ==========
 
   * Create new session for all types of invalid sessions
+  * deps: debug@2.6.3
+    - Fix: `DEBUG_MAX_ARRAY_LENGTH`
 
 2.0.0-beta.1 / 2017-02-19
 ==========================
