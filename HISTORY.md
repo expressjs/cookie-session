@@ -1,9 +1,10 @@
-unreleased
+2.0.0-beta.2 / 2017-05-23
 ==========
 
   * Create new session for all types of invalid sessions
-  * deps: debug@2.6.3
+  * deps: debug@2.6.8
     - Fix: `DEBUG_MAX_ARRAY_LENGTH`
+    - Fix: vulnerability in ms@>=0.7.1,<=1.0.0, [details](https://snyk.io/vuln/npm:ms:20170412)
 
 2.0.0-beta.1 / 2017-02-19
 ==========================
