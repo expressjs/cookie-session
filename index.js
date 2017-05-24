@@ -237,6 +237,29 @@ Object.defineProperty(Session.prototype, 'isPopulated', {
   }
 })
 
+Object.defineProperty(Session.prototype, 'maxAge', {
+  /**
+   * Change the session cookie max age
+   *
+   * @param {Number} val
+   * @api public
+   */
+  set: function setMaxAge(val) {
+    this._ctx.req.sessionOptions.maxage = val;
+    this.save();
+  },
+
+  /**
+   * Return the session cookie max age
+   *
+   * @return {Number}
+   * @api public
+   */
+  get: function getMaxAge() {
+    return this._ctx.req.sessionOptions.maxage;
+  }
+});
+
 /**
  * Save session changes by performing a Set-Cookie.
  * @private
