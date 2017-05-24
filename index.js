@@ -1,5 +1,5 @@
 /*!
- * cookie-session
+ * cookie-session v2.0.0-alpha.1
  * Copyright(c) 2013 Jonathan Ong
  * Copyright(c) 2014-2017 Douglas Christopher Wilson
  * MIT Licensed
