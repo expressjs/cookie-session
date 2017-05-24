@@ -3,8 +3,9 @@ unreleased
 
   * Create new session for all types of invalid sessions
   * Use `safe-buffer` for improved Buffer API
-  * deps: debug@2.6.3
-    - Fix: `DEBUG_MAX_ARRAY_LENGTH`
+  * deps: debug@2.6.8
+    - Fix `DEBUG_MAX_ARRAY_LENGTH`
+    - deps: ms@2.0.0
 
 2.0.0-beta.1 / 2017-02-19
 ==========================
