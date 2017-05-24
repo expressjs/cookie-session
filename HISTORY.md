@@ -2,6 +2,7 @@ unreleased
 ==========
 
   * Create new session for all types of invalid sessions
+  * Use `safe-buffer` for improved Buffer API
   * deps: debug@2.6.3
     - Fix: `DEBUG_MAX_ARRAY_LENGTH`
 

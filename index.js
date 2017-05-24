@@ -12,6 +12,7 @@
  * @private
  */
 
+var Buffer = require('safe-buffer').Buffer
 var debug = require('debug')('cookie-session')
 var Cookies = require('cookies')
 var onHeaders = require('on-headers')
@@ -286,7 +287,7 @@ function createSession (req) {
  */
 
 function decode (string) {
-  var body = new Buffer(string, 'base64').toString('utf8')
+  var body = Buffer.from(string, 'base64').toString('utf8')
   return JSON.parse(body)
 }
 
@@ -300,7 +301,7 @@ function decode (string) {
 
 function encode (body) {
   var str = JSON.stringify(body)
-  return new Buffer(str).toString('base64')
+  return Buffer.from(str).toString('base64')
 }
 
 /**
