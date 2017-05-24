@@ -1,5 +1,5 @@
-unreleased
-==========
+2.0.0-beta.2 / 2017-05-23
+=========================
 
   * Create new session for all types of invalid sessions
   * Use `safe-buffer` for improved Buffer API
