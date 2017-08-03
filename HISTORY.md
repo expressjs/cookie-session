@@ -55,6 +55,23 @@ unreleased
   * deps: on-headers@~1.0.1
     - perf: enable strict mode
 
+1.3.0 / 2015-08-03
+==================
+
+  * deps: cookies@0.7.0
+    - Add `sameSite` option for SameSite cookie support
+    - Throw on invalid values provided to `Cookie` constructor
+    - deps: keygrip@~1.0.1
+    - pref: enable strict mode
+  * deps: debug@2.6.8
+    - Allow colors in workers
+    - Deprecate `DEBUG_FD` environment variable set to 3 or higher
+    - Fix error when running under React Native
+    - Use same color for same namespace
+    - deps: ms@2.0.0
+  * deps: on-headers@~1.0.1
+    - perf: enable strict mode
+
 1.2.0 / 2015-07-01
 ==================
 
