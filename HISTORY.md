@@ -7,6 +7,8 @@ unreleased
     - Fix error when running under React Native
     - Use same color for same namespace
     - deps: ms@2.0.0
+  * deps: on-headers@~1.0.1
+    - perf: enable strict mode
 
 1.2.0 / 2015-07-01
 ==================
