@@ -1,5 +1,5 @@
-unreleased
-==========
+1.3.0 / 2015-08-03
+==================
 
   * deps: cookies@0.7.0
     - Add `sameSite` option for SameSite cookie support
