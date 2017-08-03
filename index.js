@@ -57,7 +57,9 @@ function cookieSession(options) {
   debug('session options %j', opts);
 
   return function _cookieSession(req, res, next) {
-    var cookies = req.sessionCookies = new Cookies(req, res, keys);
+    var cookies = req.sessionCookies = new Cookies(req, res, {
+      keys: keys
+    });
     var sess, json;
 
     // to pass to Session()

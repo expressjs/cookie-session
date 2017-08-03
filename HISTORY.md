@@ -1,6 +1,11 @@
 unreleased
 ==========
 
+  * deps: cookies@0.7.0
+    - Add `sameSite` option for SameSite cookie support
+    - Throw on invalid values provided to `Cookie` constructor
+    - deps: keygrip@~1.0.1
+    - pref: enable strict mode
   * deps: debug@2.6.8
     - Allow colors in workers
     - Deprecate `DEBUG_FD` environment variable set to 3 or higher
