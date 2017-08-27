@@ -1,6 +1,9 @@
 unreleased
 ==========
 
+  * deps: cookies@0.7.1
+    - deps: depd@~1.1.1
+    - deps: keygrip@~1.0.2
   * deps: safe-buffer@5.1.1
 
 2.0.0-beta.2 / 2017-05-23
@@ -55,7 +58,14 @@ unreleased
   * deps: on-headers@~1.0.1
     - perf: enable strict mode
 
-1.3.0 / 2015-08-03
+1.3.1 / 2017-08-27
+==================
+
+  * deps: cookies@0.7.1
+    - deps: depd@~1.1.1
+    - deps: keygrip@~1.0.2
+
+1.3.0 / 2017-08-03
 ==================
 
   * deps: cookies@0.7.0
