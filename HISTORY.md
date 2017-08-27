@@ -1,3 +1,10 @@
+unreleased
+==========
+
+  * deps: cookies@0.7.1
+    - deps: depd@~1.1.1
+    - deps: keygrip@~1.0.2
+
 1.3.0 / 2015-08-03
 ==================
 
