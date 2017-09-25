@@ -11,7 +11,7 @@
   ],
   "dependencies": {
     "cookies": "0.7.1",
-    "debug": "2.6.8",
+    "debug": "2.6.9",
     "on-headers": "~1.0.1"
   },
   "devDependencies": {
