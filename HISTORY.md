@@ -64,6 +64,11 @@ unreleased
   * deps: on-headers@~1.0.1
     - perf: enable strict mode
 
+1.3.2 / 2017-09-24
+==================
+
+  * deps: debug@2.6.9
+
 1.3.1 / 2017-08-27
 ==================
 
