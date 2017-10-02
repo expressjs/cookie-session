@@ -16,7 +16,7 @@
   "repository": "expressjs/cookie-session",
   "dependencies": {
     "cookies": "0.7.1",
-    "debug": "3.0.1",
+    "debug": "3.1.0",
     "on-headers": "~1.0.1",
     "safe-buffer": "5.1.1"
   },
