@@ -7,8 +7,6 @@ var request = require('supertest')
 var session = require('..')
 
 describe('Cookie Session', function () {
-  var cookie
-
   describe('"httpOnly" option', function () {
     it('should default to "true"', function (done) {
       var app = App()
@@ -19,7 +17,7 @@ describe('Cookie Session', function () {
 
       request(app)
       .get('/')
-      .expect('Set-Cookie', /httpOnly/i)
+      .expect(shouldHaveCookieWithParameter('session', 'httpOnly'))
       .expect(200, 'true', done)
     })
 
@@ -32,7 +30,7 @@ describe('Cookie Session', function () {
 
       request(app)
       .get('/')
-      .expect('Set-Cookie', /(?!httpOnly)/i)
+      .expect(shouldHaveCookieWithoutParameter('session', 'httpOnly'))
       .expect(200, 'false', done)
     })
   })
@@ -51,7 +49,7 @@ describe('Cookie Session', function () {
 
       request(app)
       .get('/')
-      .expect('Set-Cookie', /foo=bar/)
+      .expect(shouldHaveCookieWithValue('foo', 'bar'))
       .expect(200, 'true', done)
     })
 
@@ -68,7 +66,7 @@ describe('Cookie Session', function () {
 
       request(app)
       .get('/')
-      .expect('Set-Cookie', /foo=bar/)
+      .expect(shouldHaveCookieWithValue('foo', 'bar'))
       .expect('Set-Cookie', /session=foo/)
       .expect(200, 'false', done)
     })
@@ -189,10 +187,9 @@ describe('Cookie Session', function () {
       .expect(shouldHaveCookie('session'))
       .expect(204, function (err, res) {
         if (err) return done(err)
-        var cookie = res.headers['set-cookie']
         request(app)
         .get('/')
-        .set('Cookie', cookie.join(';'))
+        .set('Cookie', cookieHeader(cookies(res)))
         .expect(';', done)
       })
     })
@@ -253,28 +250,31 @@ describe('Cookie Session', function () {
         request(app)
         .get('/')
         .expect(shouldHaveCookie('session'))
-        .expect(200, function (err, res) {
-          if (err) return done(err)
-          cookie = res.header['set-cookie'].join(';')
-          done()
-        })
-      })
-
-      it('should not Set-Cookie', function (done) {
-        var app = App()
-        app.use(function (req, res, next) {
-          res.end(JSON.stringify(this.session))
-        })
-
-        request(app)
-        .get('/')
-        .expect(shouldNotSetCookies())
         .expect(200, done)
       })
     })
   })
 
   describe('saved session', function () {
+    var cookie
+
+    before(function (done) {
+      var app = App()
+      app.use(function (req, res, next) {
+        req.session.message = 'hello'
+        res.end()
+      })
+
+      request(app)
+      .get('/')
+      .expect(shouldHaveCookie('session'))
+      .expect(200, function (err, res) {
+        if (err) return done(err)
+        cookie = cookieHeader(cookies(res))
+        done()
+      })
+    })
+
     describe('when not accessed', function () {
       it('should not Set-Cookie', function (done) {
         var app = App()
@@ -461,20 +461,12 @@ describe('Cookie Session', function () {
 
       request(app)
       .get('/')
-      .expect(function (res) {
-        var date = new Date(res.headers.date)
-        var expires = new Date(res.headers['set-cookie'][0].match(/expires=([^;]+)/)[1])
-        assert.ok(expires - date <= 3600000)
-      })
+      .expect(shouldHaveCookieWithTTLBetween('my.session', 0, 3600000))
       .expect(200, function (err) {
         if (err) return done(err)
         request(app)
         .get('/max')
-        .expect(function (res) {
-          var date = new Date(res.headers.date)
-          var expires = new Date(res.headers['set-cookie'][0].match(/expires=([^;]+)/)[1])
-          assert.ok(expires - date > 5000000)
-        })
+        .expect(shouldHaveCookieWithTTLBetween('my.session', 5000000, Infinity))
         .expect(200, done)
       })
     })
@@ -489,11 +481,79 @@ function App (options) {
   return app
 }
 
+function cookieHeader (cookies) {
+  return Object.keys(cookies).map(function (name) {
+    return name + '=' + cookies[name].value
+  }).join('; ')
+}
+
+function cookies (res) {
+  var headers = res.headers['set-cookie'] || []
+  var obj = Object.create(null)
+
+  for (var i = 0; i < headers.length; i++) {
+    var params = Object.create(null)
+    var parts = headers[i].split(';')
+    var nvp = parts[0].split('=')
+
+    for (var j = 1; j < parts.length; j++) {
+      var pvp = parts[j].split('=')
+
+      params[pvp[0].trim().toLowerCase()] = pvp[1]
+        ? pvp[1].trim()
+        : true
+    }
+
+    var ttl = params.expires
+      ? Date.parse(params.expires) - Date.parse(res.headers.date)
+      : null
+
+    obj[nvp[0].trim()] = {
+      value: nvp.slice(1).join('=').trim(),
+      params: params,
+      ttl: ttl
+    }
+  }
+
+  return obj
+}
+
 function shouldHaveCookie (name) {
   return function (res) {
-    assert.ok(res.headers['set-cookie'].some(function (cookie) {
-      return cookie.split('=')[0] === name
-    }), 'should have cookie "' + name + '"')
+    assert.ok((name in cookies(res)), 'should have cookie "' + name + '"')
+  }
+}
+
+function shouldHaveCookieWithParameter (name, param) {
+  return function (res) {
+    assert.ok((name in cookies(res)), 'should have cookie "' + name + '"')
+    assert.ok((param.toLowerCase() in cookies(res)[name].params),
+      'should have parameter "' + param + '"')
+  }
+}
+
+function shouldHaveCookieWithoutParameter (name, param) {
+  return function (res) {
+    assert.ok((name in cookies(res)), 'should have cookie "' + name + '"')
+    assert.ok(!(param.toLowerCase() in cookies(res)[name].params),
+      'should not have parameter "' + param + '"')
+  }
+}
+
+function shouldHaveCookieWithTTLBetween (name, low, high) {
+  return function (res) {
+    assert.ok((name in cookies(res)), 'should have cookie "' + name + '"')
+    assert.ok(('expires' in cookies(res)[name].params),
+      'should have parameter "expires"')
+    assert.ok((cookies(res)[name].ttl >= low && cookies(res)[name].ttl <= high),
+      'should have TTL between ' + low + ' and ' + high)
+  }
+}
+
+function shouldHaveCookieWithValue (name, value) {
+  return function (res) {
+    assert.ok((name in cookies(res)), 'should have cookie "' + name + '"')
+    assert.equal(cookies(res)[name].value, value)
   }
 }
 
