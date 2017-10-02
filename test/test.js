@@ -482,10 +482,10 @@ describe('Cookie Session', function () {
 })
 
 function App (options) {
-  options = options || {}
-  options.keys = ['a', 'b']
+  var opts = Object.create(options || null)
+  opts.keys = ['a', 'b']
   var app = connect()
-  app.use(session(options))
+  app.use(session(opts))
   return app
 }
 
