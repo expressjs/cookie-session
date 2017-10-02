@@ -4,7 +4,8 @@ unreleased
   * deps: cookies@0.7.1
     - deps: depd@~1.1.1
     - deps: keygrip@~1.0.2
-  * deps: debug@3.0.1
+  * deps: debug@3.1.0
+    - Add `DEBUG_HIDE_DATE`
     - Add 256 color mode support
     - Enable / disable namespaces dynamically
     - Make millisecond timer namespace-specific
