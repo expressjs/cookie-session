@@ -16,6 +16,7 @@ var Buffer = require('safe-buffer').Buffer
 var debug = require('debug')('cookie-session')
 var Cookies = require('cookies')
 var onHeaders = require('on-headers')
+var Keygrip = require('keygrip')
 
 /**
  * Module exports.
@@ -57,10 +58,13 @@ function cookieSession (options) {
 
   debug('session options %j', opts)
 
+  var algorithm = opts.algorithm || 'sha1'
+  var encoding = opts.encoding || 'base64'
+
+  var cookieOptions = new Keygrip(keys, algorithm, encoding)
+
   return function _cookieSession (req, res, next) {
-    var cookies = new Cookies(req, res, {
-      keys: keys
-    })
+    var cookies = new Cookies(req, res, cookieOptions)
     var sess
 
     // to pass to Session()
