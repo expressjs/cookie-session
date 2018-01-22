@@ -47,7 +47,11 @@ function cookieSession (options) {
 
   // secrets
   var keys = opts.keys
-  if (!keys && opts.secret) keys = [opts.secret]
+  var isSecret;
+  if (!keys && opts.secret) {
+    keys = [opts.secret]
+    isSecret = true
+  }
 
   // defaults
   if (opts.overwrite == null) opts.overwrite = true
@@ -58,10 +62,15 @@ function cookieSession (options) {
 
   debug('session options %j', opts)
 
-  var algorithm = opts.algorithm || 'sha1'
-  var encoding = opts.encoding || 'base64'
+  var cookieOptions = {
+    keys: keys
+  }
 
-  var cookieOptions = new Keygrip(keys, algorithm, encoding)
+  if (keys && isSecret) {
+    var algorithm = opts.algorithm || 'sha256'
+    var encoding = opts.encoding || 'base64'
+    cookieOptions = new Keygrip(keys, algorithm, encoding)
+  }
 
   return function _cookieSession (req, res, next) {
     var cookies = new Cookies(req, res, cookieOptions)
