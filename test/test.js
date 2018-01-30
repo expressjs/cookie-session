@@ -103,6 +103,53 @@ describe('Cookie Session', function () {
         .get('/')
         .expect(200, '', done)
       })
+
+      it('should work with algorithm set', function (done) {
+        var app = connect()
+        app.use(session({
+          secret: ['a'],
+          algorithm: 'sha256'
+        }))
+        app.use(function (req, res, next) {
+          req.session.message = 'hi'
+          res.end()
+        })
+
+        request(app)
+        .get('/')
+        .expect(200, '', done)
+      })
+
+    it('should work with algorithm not set', function (done) {
+        var app = connect()
+        app.use(session({
+          secret: ['a']
+        }))
+        app.use(function (req, res, next) {
+          req.session.message = 'hi'
+          res.end()
+        })
+
+        request(app)
+        .get('/')
+        .expect(200, '', done)
+      })
+
+      it('should work with encoding set', function (done) {
+        var app = connect()
+        app.use(session({
+          secret: ['a'],
+          encoding: 'base64'
+        }))
+        app.use(function (req, res, next) {
+          req.session.message = 'hi'
+          res.end()
+        })
+
+        request(app)
+        .get('/')
+        .expect(200, '', done)
+      })
     })
 
     describe('when options.secret is set', function () {

@@ -16,6 +16,7 @@ var Buffer = require('safe-buffer').Buffer
 var debug = require('debug')('cookie-session')
 var Cookies = require('cookies')
 var onHeaders = require('on-headers')
+var Keygrip = require('keygrip')
 
 /**
  * Module exports.
@@ -46,7 +47,11 @@ function cookieSession (options) {
 
   // secrets
   var keys = opts.keys
-  if (!keys && opts.secret) keys = [opts.secret]
+  var isSecret;
+  if (!keys && opts.secret) {
+    keys = [opts.secret]
+    isSecret = true
+  }
 
   // defaults
   if (opts.overwrite == null) opts.overwrite = true
@@ -57,10 +62,18 @@ function cookieSession (options) {
 
   debug('session options %j', opts)
 
+  var cookieOptions = {
+    keys: keys
+  }
+
+  if (keys && isSecret) {
+    var algorithm = opts.algorithm || 'sha256'
+    var encoding = opts.encoding || 'base64'
+    cookieOptions = new Keygrip(keys, algorithm, encoding)
+  }
+
   return function _cookieSession (req, res, next) {
-    var cookies = new Cookies(req, res, {
-      keys: keys
-    })
+    var cookies = new Cookies(req, res, cookieOptions)
     var sess
 
     // to pass to Session()
