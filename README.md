@@ -74,7 +74,8 @@ The name of the cookie to set, defaults to `session`.
 
 The list of keys to use to sign & verify cookie values. Set cookies are always
 signed with `keys[0]`, while the other keys are valid for verification, allowing
-for key rotation.
+for key rotation. For enhanced security use [keygrip](https://github.com/crypto-utils/keygrip)
+instance with keys, algorithm, and encoding.
 
 ##### secret
 
@@ -205,6 +206,23 @@ app.use(function (req, res, next) {
   req.session.nowInMinutes = Math.floor(Date.now() / 60e3)
   next()
 })
+
+// ... your logic here ...
+```
+
+### Using a custom signature algorithm
+
+```js
+var Keygrip = require('keygrip')
+var cookieSession = require('cookie-session')
+var express = require('express')
+
+var app = express()
+
+app.use(cookieSession({
+  name: 'session',
+  keys: new Keygrip(['key1', 'key2'], 'SHA384', 'base64')
+}))
 
 // ... your logic here ...
 ```
