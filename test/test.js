@@ -16,9 +16,9 @@ describe('Cookie Session', function () {
       })
 
       request(app)
-      .get('/')
-      .expect(shouldHaveCookieWithParameter('session', 'httpOnly'))
-      .expect(200, 'true', done)
+        .get('/')
+        .expect(shouldHaveCookieWithParameter('session', 'httpOnly'))
+        .expect(200, 'true', done)
     })
 
     it('should use given "false"', function (done) {
@@ -29,9 +29,9 @@ describe('Cookie Session', function () {
       })
 
       request(app)
-      .get('/')
-      .expect(shouldHaveCookieWithoutParameter('session', 'httpOnly'))
-      .expect(200, 'false', done)
+        .get('/')
+        .expect(shouldHaveCookieWithoutParameter('session', 'httpOnly'))
+        .expect(200, 'false', done)
     })
   })
 
@@ -48,9 +48,9 @@ describe('Cookie Session', function () {
       })
 
       request(app)
-      .get('/')
-      .expect(shouldHaveCookieWithValue('foo', 'bar'))
-      .expect(200, 'true', done)
+        .get('/')
+        .expect(shouldHaveCookieWithValue('foo', 'bar'))
+        .expect(200, 'true', done)
     })
 
     it('should use given "false"', function (done) {
@@ -65,10 +65,10 @@ describe('Cookie Session', function () {
       })
 
       request(app)
-      .get('/')
-      .expect(shouldHaveCookieWithValue('foo', 'bar'))
-      .expect('Set-Cookie', /session=foo/)
-      .expect(200, 'false', done)
+        .get('/')
+        .expect(shouldHaveCookieWithValue('foo', 'bar'))
+        .expect('Set-Cookie', /session=foo/)
+        .expect(200, 'false', done)
     })
   })
 
@@ -81,9 +81,9 @@ describe('Cookie Session', function () {
       })
 
       request(app)
-      .get('/')
-      .expect(shouldHaveCookie('my.session'))
-      .expect(200, done)
+        .get('/')
+        .expect(shouldHaveCookie('my.session'))
+        .expect(200, done)
     })
   })
 
@@ -100,8 +100,8 @@ describe('Cookie Session', function () {
         })
 
         request(app)
-        .get('/')
-        .expect(200, '', done)
+          .get('/')
+          .expect(200, '', done)
       })
     })
 
@@ -117,8 +117,8 @@ describe('Cookie Session', function () {
         })
 
         request(app)
-        .get('/')
-        .expect(200, '', done)
+          .get('/')
+          .expect(200, '', done)
       })
     })
 
@@ -144,8 +144,8 @@ describe('Cookie Session', function () {
         })
 
         request(app)
-        .get('/')
-        .expect(200, done)
+          .get('/')
+          .expect(200, done)
       })
     })
   })
@@ -162,9 +162,9 @@ describe('Cookie Session', function () {
         })
 
         request(app)
-        .get('/')
-        .expect(shouldNotSetCookies())
-        .expect(200, done)
+          .get('/')
+          .expect(shouldNotSetCookies())
+          .expect(200, done)
       })
     })
   })
@@ -183,15 +183,15 @@ describe('Cookie Session', function () {
       })
 
       request(app)
-      .post('/')
-      .expect(shouldHaveCookie('session'))
-      .expect(204, function (err, res) {
-        if (err) return done(err)
-        request(app)
-        .get('/')
-        .set('Cookie', cookieHeader(cookies(res)))
-        .expect(';', done)
-      })
+        .post('/')
+        .expect(shouldHaveCookie('session'))
+        .expect(204, function (err, res) {
+          if (err) return done(err)
+          request(app)
+            .get('/')
+            .set('Cookie', cookieHeader(cookies(res)))
+            .expect(';', done)
+        })
     })
   })
 
@@ -203,9 +203,9 @@ describe('Cookie Session', function () {
       })
 
       request(app)
-      .get('/')
-      .set('Cookie', 'my.session=bogus')
-      .expect(200, 'true', done)
+        .get('/')
+        .set('Cookie', 'my.session=bogus')
+        .expect(200, 'true', done)
     })
   })
 
@@ -218,9 +218,9 @@ describe('Cookie Session', function () {
         })
 
         request(app)
-        .get('/')
-        .expect(shouldNotSetCookies())
-        .expect(200, done)
+          .get('/')
+          .expect(shouldNotSetCookies())
+          .expect(200, done)
       })
     })
 
@@ -233,9 +233,9 @@ describe('Cookie Session', function () {
         })
 
         request(app)
-        .get('/')
-        .expect(shouldNotSetCookies())
-        .expect(200, done)
+          .get('/')
+          .expect(shouldNotSetCookies())
+          .expect(200, done)
       })
     })
 
@@ -248,9 +248,9 @@ describe('Cookie Session', function () {
         })
 
         request(app)
-        .get('/')
-        .expect(shouldHaveCookie('session'))
-        .expect(200, done)
+          .get('/')
+          .expect(shouldHaveCookie('session'))
+          .expect(200, done)
       })
     })
   })
@@ -266,13 +266,13 @@ describe('Cookie Session', function () {
       })
 
       request(app)
-      .get('/')
-      .expect(shouldHaveCookie('session'))
-      .expect(200, function (err, res) {
-        if (err) return done(err)
-        cookie = cookieHeader(cookies(res))
-        done()
-      })
+        .get('/')
+        .expect(shouldHaveCookie('session'))
+        .expect(200, function (err, res) {
+          if (err) return done(err)
+          cookie = cookieHeader(cookies(res))
+          done()
+        })
     })
 
     describe('when not accessed', function () {
@@ -283,10 +283,10 @@ describe('Cookie Session', function () {
         })
 
         request(app)
-        .get('/')
-        .set('Cookie', cookie)
-        .expect(shouldNotSetCookies())
-        .expect(200, done)
+          .get('/')
+          .set('Cookie', cookie)
+          .expect(shouldNotSetCookies())
+          .expect(200, done)
       })
     })
 
@@ -299,9 +299,9 @@ describe('Cookie Session', function () {
         })
 
         request(app)
-        .get('/')
-        .set('Cookie', cookie)
-        .expect(200, done)
+          .get('/')
+          .set('Cookie', cookie)
+          .expect(200, done)
       })
 
       it('should not Set-Cookie', function (done) {
@@ -312,10 +312,10 @@ describe('Cookie Session', function () {
         })
 
         request(app)
-        .get('/')
-        .set('Cookie', cookie)
-        .expect(shouldNotSetCookies())
-        .expect(200, done)
+          .get('/')
+          .set('Cookie', cookie)
+          .expect(shouldNotSetCookies())
+          .expect(200, done)
       })
     })
 
@@ -328,10 +328,10 @@ describe('Cookie Session', function () {
         })
 
         request(app)
-        .get('/')
-        .set('Cookie', cookie)
-        .expect(shouldHaveCookie('session'))
-        .expect(200, done)
+          .get('/')
+          .set('Cookie', cookie)
+          .expect(shouldHaveCookie('session'))
+          .expect(200, done)
       })
     })
   })
@@ -346,9 +346,9 @@ describe('Cookie Session', function () {
         })
 
         request(app)
-        .get('/')
-        .expect(shouldHaveCookie('session'))
-        .expect(200, done)
+          .get('/')
+          .expect(shouldHaveCookie('session'))
+          .expect(200, done)
       })
 
       it('should no longer return a session', function (done) {
@@ -359,9 +359,9 @@ describe('Cookie Session', function () {
         })
 
         request(app)
-        .get('/')
-        .expect(shouldHaveCookie('session'))
-        .expect(200, 'null', done)
+          .get('/')
+          .expect(shouldHaveCookie('session'))
+          .expect(200, 'null', done)
       })
     })
 
@@ -374,9 +374,9 @@ describe('Cookie Session', function () {
         })
 
         request(app)
-        .get('/')
-        .expect(shouldNotSetCookies())
-        .expect(200, 'hello, world', done)
+          .get('/')
+          .expect(shouldNotSetCookies())
+          .expect(200, 'hello, world', done)
       })
     })
 
@@ -389,9 +389,9 @@ describe('Cookie Session', function () {
         })
 
         request(app)
-        .get('/')
-        .expect(shouldHaveCookie('session'))
-        .expect(200, done)
+          .get('/')
+          .expect(shouldHaveCookie('session'))
+          .expect(200, done)
       })
     })
 
@@ -403,8 +403,8 @@ describe('Cookie Session', function () {
         })
 
         request(app)
-        .get('/')
-        .expect(500, done)
+          .get('/')
+          .expect(500, done)
       })
     })
   })
@@ -418,8 +418,8 @@ describe('Cookie Session', function () {
         })
 
         request(app)
-        .get('/')
-        .expect(200, 'false', done)
+          .get('/')
+          .expect(200, 'false', done)
       })
 
       it('should be true after adding property', function (done) {
@@ -430,8 +430,8 @@ describe('Cookie Session', function () {
         })
 
         request(app)
-        .get('/')
-        .expect(200, 'true', done)
+          .get('/')
+          .expect(200, 'true', done)
       })
     })
   })
@@ -444,8 +444,8 @@ describe('Cookie Session', function () {
       })
 
       request(app)
-      .get('/')
-      .expect(200, 'my.session', done)
+        .get('/')
+        .expect(200, 'my.session', done)
     })
 
     it('should alter the cookie setting', function (done) {
@@ -460,15 +460,15 @@ describe('Cookie Session', function () {
       })
 
       request(app)
-      .get('/')
-      .expect(shouldHaveCookieWithTTLBetween('my.session', 0, 3600000))
-      .expect(200, function (err) {
-        if (err) return done(err)
-        request(app)
-        .get('/max')
-        .expect(shouldHaveCookieWithTTLBetween('my.session', 5000000, Infinity))
-        .expect(200, done)
-      })
+        .get('/')
+        .expect(shouldHaveCookieWithTTLBetween('my.session', 0, 3600000))
+        .expect(200, function (err) {
+          if (err) return done(err)
+          request(app)
+            .get('/max')
+            .expect(shouldHaveCookieWithTTLBetween('my.session', 5000000, Infinity))
+            .expect(200, done)
+        })
     })
   })
 })
