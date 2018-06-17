@@ -28,7 +28,7 @@
     "eslint-plugin-markdown": "1.0.0-beta.6",
     "eslint-plugin-node": "6.0.1",
     "eslint-plugin-promise": "3.8.0",
-    "eslint-plugin-standard": "3.0.1",
+    "eslint-plugin-standard": "3.1.0",
     "mocha": "3.5.3",
     "nyc": "10.3.2",
     "supertest": "1.2.0"
