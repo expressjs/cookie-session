@@ -294,7 +294,7 @@ describe('Cookie Session', function () {
       it('should be the same session', function (done) {
         var app = App()
         app.use(function (req, res, next) {
-          assert.equal(req.session.message, 'hello')
+          assert.strictEqual(req.session.message, 'hello')
           res.end('aklsjdfkljasdf')
         })
 
@@ -307,7 +307,7 @@ describe('Cookie Session', function () {
       it('should not Set-Cookie', function (done) {
         var app = App()
         app.use(function (req, res, next) {
-          assert.equal(req.session.message, 'hello')
+          assert.strictEqual(req.session.message, 'hello')
           res.end('aklsjdfkljasdf')
         })
 
@@ -553,7 +553,7 @@ function shouldHaveCookieWithTTLBetween (name, low, high) {
 function shouldHaveCookieWithValue (name, value) {
   return function (res) {
     assert.ok((name in cookies(res)), 'should have cookie "' + name + '"')
-    assert.equal(cookies(res)[name].value, value)
+    assert.strictEqual(cookies(res)[name].value, value)
   }
 }
 
