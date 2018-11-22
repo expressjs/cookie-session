@@ -12,6 +12,7 @@ node_js:
   - "8.13"
   - "9.11"
   - "10.13"
+  - "11.2"
 sudo: false
 before_install:
   # Skip updating shrinkwrap / lock
