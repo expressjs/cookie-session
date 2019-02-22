@@ -10,7 +10,7 @@
     "session"
   ],
   "dependencies": {
-    "cookies": "0.7.1",
+    "cookies": "0.7.3",
     "debug": "2.6.9",
     "on-headers": "~1.0.1"
   },

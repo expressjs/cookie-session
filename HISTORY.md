@@ -1,3 +1,11 @@
+unreleased
+==========
+
+  * deps: cookies@0.7.3
+    - deps: depd@~1.1.2
+    - deps: keygrip@~1.0.3
+    - perf: remove argument reassignment
+
 1.3.2 / 2017-09-24
 ==================
 
