@@ -5,6 +5,8 @@ unreleased
     - deps: depd@~1.1.2
     - deps: keygrip@~1.0.3
     - perf: remove argument reassignment
+  * deps: on-headers@~1.0.2
+    - Fix `res.writeHead` patch missing return value
 
 1.3.2 / 2017-09-24
 ==================
