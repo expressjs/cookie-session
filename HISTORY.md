@@ -1,6 +1,12 @@
 2.x
 ===
 
+  * deps: cookies@0.7.3
+    - deps: depd@~1.1.2
+    - deps: keygrip@~1.0.3
+    - perf: remove argument reassignment
+  * deps: on-headers@~1.0.2
+    - Fix `res.writeHead` patch missing return value
   * deps: safe-buffer@5.1.2
 
 2.0.0-beta.3 / 2017-10-13
@@ -69,6 +75,16 @@
     - Throw on invalid values provided to `Cookie` constructor
   * deps: on-headers@~1.0.1
     - perf: enable strict mode
+
+1.3.3 / 2019-02-28
+==================
+
+  * deps: cookies@0.7.3
+    - deps: depd@~1.1.2
+    - deps: keygrip@~1.0.3
+    - perf: remove argument reassignment
+  * deps: on-headers@~1.0.2
+    - Fix `res.writeHead` patch missing return value
 
 1.3.2 / 2017-09-24
 ==================
