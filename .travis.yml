@@ -14,20 +14,48 @@ node_js:
   - "10.15"
   - "11.9"
 sudo: false
+dist: trusty
 cache:
   directories:
     - node_modules
 before_install:
-  # Skip updating shrinkwrap / lock
-  - "npm config set shrinkwrap false"
+  # Configure npm
+  - |
+    # Skip updating shrinkwrap / lock
+    npm config set shrinkwrap false
   # Setup Node.js version-specific dependencies
-  - "test $(echo $TRAVIS_NODE_VERSION | cut -d. -f1) -ge 6 || npm rm --save-dev $(grep -E '\"eslint\\S*\"' package.json | cut -d'\"' -f2)"
+  - |
+    # eslint for linting
+    # - remove on Node.js < 6
+    if [[ "$(cut -d. -f1 <<< "$TRAVIS_NODE_VERSION")" -lt 6 ]]; then
+      node -pe 'Object.keys(require("./package").devDependencies).join("\n")' | \
+        grep -E '^eslint(-|$)' | \
+        xargs npm rm --save-dev
+    fi
   # Update Node.js modules
-  - "test ! -d node_modules || npm prune"
-  - "test ! -d node_modules || npm rebuild"
+  - |
+    # Prune & rebuild node_modules
+    if [[ -d node_modules ]]; then
+      npm prune
+      npm rebuild
+    fi
 script:
-  # Run test script, depending on nyc install
-  - "test ! -z $(npm -ps ls nyc) || npm test"
-  - "test   -z $(npm -ps ls nyc) || npm run-script test-ci"
+  - |
+    # Run test script, depending on nyc install
+    if npm -ps ls nyc | grep -q nyc; then
+      npm run-script test-ci
+    else
+      npm test
+    fi
+  - |
+    # Run linting, if eslint exists
+    if npm -ps ls eslint | grep -q eslint; then
+      npm run-script lint
+    fi
 after_script:
-  - "test -d .nyc_output && npm install coveralls@2 && nyc report --reporter=text-lcov | coveralls"
+  - |
+    # Upload coverage to coveralls if exists
+    if [[ -d .nyc_output ]]; then
+      npm install --save-dev coveralls@2
+      nyc report --reporter=text-lcov | coveralls
+    fi
