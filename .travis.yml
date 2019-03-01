@@ -19,6 +19,30 @@ cache:
   directories:
     - node_modules
 before_install:
+  - |
+    # Setup utility functions
+    function node_version_lt () {
+      [[ "$(v "$TRAVIS_NODE_VERSION")" -lt "$(v "${1}")" ]]
+    }
+    function npm_module_installed () {
+      npm -lsp ls | grep -Fq "$(pwd)/node_modules/${1}:${1}@"
+    }
+    function npm_remove_module_re () {
+      node -e '
+        fs = require("fs");
+        p = JSON.parse(fs.readFileSync("package.json", "utf8"));
+        r = RegExp(process.argv[1]);
+        for (k in p.devDependencies) {
+          if (r.test(k)) delete p.devDependencies[k];
+        }
+        fs.writeFileSync("package.json", JSON.stringify(p, null, 2) + "\n");
+      ' "$@"
+    }
+    function v () {
+      tr '.' '\n' <<< "${1}" \
+        | awk '{ printf "%03d", $0 }' \
+        | sed 's/^0*//'
+    }
   # Configure npm
   - |
     # Skip updating shrinkwrap / lock
@@ -27,10 +51,7 @@ before_install:
   - |
     # eslint for linting
     # - remove on Node.js < 6
-    if [[ "$(cut -d. -f1 <<< "$TRAVIS_NODE_VERSION")" -lt 6 ]]; then
-      node -pe 'Object.keys(require("./package").devDependencies).join("\n")' | \
-        grep -E '^eslint(-|$)' | \
-        xargs npm rm --save-dev
+    if node_version_lt '6.0'; then npm_remove_module_re '^eslint(-|$)'
     fi
   # Update Node.js modules
   - |
@@ -39,18 +60,19 @@ before_install:
       npm prune
       npm rebuild
     fi
+before_scrpt:
+  - |
+    # Contents of node_modules
+    npm -s ls ||:
 script:
   - |
     # Run test script, depending on nyc install
-    if npm -ps ls nyc | grep -q nyc; then
-      npm run-script test-ci
-    else
-      npm test
+    if npm_module_installed 'nyc'; then npm run-script test-ci
+    else npm test
     fi
   - |
     # Run linting, if eslint exists
-    if npm -ps ls eslint | grep -q eslint; then
-      npm run-script lint
+    if npm_module_installed 'eslint'; then npm run-script lint
     fi
 after_script:
   - |
