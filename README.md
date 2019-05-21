@@ -151,7 +151,7 @@ app.get('/', function (req, res, next) {
   req.session.views = (req.session.views || 0) + 1
 
   // Write response
-  res.end(req.session.views + ' views')
+  res.send(req.session.views + ' views')
 })
 
 app.listen(3000)
