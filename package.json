@@ -21,7 +21,7 @@
     "safe-buffer": "5.1.2"
   },
   "devDependencies": {
-    "connect": "3.6.6",
+    "connect": "3.7.0",
     "eslint": "5.15.2",
     "eslint-config-standard": "12.0.0",
     "eslint-plugin-import": "2.16.0",
