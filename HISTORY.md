@@ -5,6 +5,7 @@
     - deps: depd@~1.1.2
     - deps: keygrip@~1.0.3
     - perf: remove argument reassignment
+  * deps: debug@3.2.6
   * deps: on-headers@~1.0.2
     - Fix `res.writeHead` patch missing return value
   * deps: safe-buffer@5.1.2
