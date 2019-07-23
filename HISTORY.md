@@ -1,3 +1,81 @@
+2.x
+===
+
+  * deps: cookies@0.7.3
+    - deps: depd@~1.1.2
+    - deps: keygrip@~1.0.3
+    - perf: remove argument reassignment
+  * deps: on-headers@~1.0.2
+    - Fix `res.writeHead` patch missing return value
+  * deps: safe-buffer@5.1.2
+
+2.0.0-beta.3 / 2017-10-13
+=========================
+
+  * deps: cookies@0.7.1
+    - deps: depd@~1.1.1
+    - deps: keygrip@~1.0.2
+  * deps: debug@3.1.0
+    - Add `DEBUG_HIDE_DATE`
+    - Add 256 color mode support
+    - Enable / disable namespaces dynamically
+    - Make millisecond timer namespace-specific
+    - Remove `DEBUG_FD` support
+    - Use `Date#toISOString()` when output is not a TTY
+  * deps: safe-buffer@5.1.1
+
+2.0.0-beta.2 / 2017-05-23
+=========================
+
+  * Create new session for all types of invalid sessions
+  * Use `safe-buffer` for improved Buffer API
+  * deps: debug@2.6.8
+    - Fix `DEBUG_MAX_ARRAY_LENGTH`
+    - deps: ms@2.0.0
+
+2.0.0-beta.1 / 2017-02-19
+==========================
+
+  * Drop support for Node.js 0.8
+  * deps: cookies@0.7.0
+    - Add `sameSite` option for SameSite cookie support
+    - pref: enable strict mode
+
+2.0.0-alpha.3 / 2017-02-12
+==========================
+
+  * Use `Object.defineProperty` instead of deprecated `__define*__`
+  * deps: cookies@0.6.2
+    - deps: keygrip@~1.0.1
+  * deps: debug@2.6.1
+    - Allow colors in workers
+    - Deprecated `DEBUG_FD` environment variable set to `3` or higher
+    - Fix error when running under React Native
+    - Use same color for same namespace
+    - deps: ms@0.7.2
+
+2.0.0-alpha.2 / 2016-11-10
+==========================
+
+  * deps: cookies@0.6.1
+  * deps: debug@2.3.2
+    - Fix error when running under React Native
+    - deps: ms@0.7.2
+
+2.0.0-alpha.1 / 2015-10-11
+==========================
+
+  * Change default cookie name to `session`
+  * Change `.populated` to `.isPopulated`
+  * Remove the `key` option; use `name` instead
+  * Save all enumerable properties on `req.session`
+    - Including `_`-prefixed properties
+  * perf: reduce the scope of try-catch deopt
+  * deps: cookies@0.5.1
+    - Throw on invalid values provided to `Cookie` constructor
+  * deps: on-headers@~1.0.1
+    - perf: enable strict mode
+
 1.3.3 / 2019-02-28
 ==================
 
