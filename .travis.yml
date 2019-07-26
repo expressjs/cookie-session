@@ -13,7 +13,7 @@ node_js:
   - "9.11"
   - "10.15"
   - "11.15"
-  - "12.3"
+  - "12.7"
 sudo: false
 dist: trusty
 cache:
