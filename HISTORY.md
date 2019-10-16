@@ -1,3 +1,13 @@
+unreleased
+==========
+
+  * deps: cookies@0.8.0
+    - Fix check for default `secure` option behavior
+    - Fix `maxAge` option preventing cookie deletion
+    - Support `"none"` in `sameSite` option
+    - deps: depd@~2.0.0
+    - deps: keygrip@~1.1.0
+
 1.3.3 / 2019-02-28
 ==================
 
