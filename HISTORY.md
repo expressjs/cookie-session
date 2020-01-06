@@ -1,5 +1,5 @@
-unreleased
-==========
+1.4.0 / 2020-01-06
+==================
 
   * deps: cookies@0.8.0
     - Fix check for default `secure` option behavior
