@@ -1,9 +1,12 @@
 2.x
 ===
 
-  * deps: cookies@0.7.3
-    - deps: depd@~1.1.2
-    - deps: keygrip@~1.0.3
+  * deps: cookies@0.8.0
+    - Fix check for default `secure` option behavior
+    - Fix `maxAge` option preventing cookie deletion
+    - Support `"none"` in `sameSite` option
+    - deps: depd@~2.0.0
+    - deps: keygrip@~1.1.0
     - perf: remove argument reassignment
   * deps: debug@3.2.6
   * deps: on-headers@~1.0.2
@@ -76,6 +79,16 @@
     - Throw on invalid values provided to `Cookie` constructor
   * deps: on-headers@~1.0.1
     - perf: enable strict mode
+
+1.4.0 / 2020-01-06
+==================
+
+  * deps: cookies@0.8.0
+    - Fix check for default `secure` option behavior
+    - Fix `maxAge` option preventing cookie deletion
+    - Support `"none"` in `sameSite` option
+    - deps: depd@~2.0.0
+    - deps: keygrip@~1.1.0
 
 1.3.3 / 2019-02-28
 ==================
