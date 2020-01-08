@@ -211,20 +211,6 @@ Object.defineProperty(Session.prototype, 'isNew', {
 })
 
 /**
- * Return how many values there are in the session object.
- * Used to see if it's "populated".
- *
- * @return {Number}
- * @public
- */
-
-Object.defineProperty(Session.prototype, 'length', {
-  get: function getLength () {
-    return Object.keys(this).length
-  }
-})
-
-/**
  * populated flag, which is just a boolean alias of .length.
  *
  * @return {Boolean}
@@ -233,7 +219,7 @@ Object.defineProperty(Session.prototype, 'length', {
 
 Object.defineProperty(Session.prototype, 'isPopulated', {
   get: function getIsPopulated () {
-    return Boolean(this.length)
+    return Object.keys(this).length > 0
   }
 })
 
