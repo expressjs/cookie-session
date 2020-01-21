@@ -63,10 +63,8 @@ function cookieSession (options) {
     })
     var sess
 
-    // to pass to Session()
-    req.sessionCookies = cookies
+    // for overriding
     req.sessionOptions = Object.create(opts)
-    req.sessionKey = name
 
     // define req.session getter / setter
     Object.defineProperty(req, 'session', {
@@ -88,7 +86,7 @@ function cookieSession (options) {
       }
 
       // get session
-      if ((sess = tryGetSession(req))) {
+      if ((sess = tryGetSession(cookies, name, req.sessionOptions))) {
         return sess
       }
 
@@ -269,15 +267,11 @@ function encode (body) {
 }
 
 /**
- * Try getting a session from a request.
+ * Try getting a session from a cookie.
  * @private
  */
 
-function tryGetSession (req) {
-  var cookies = req.sessionCookies
-  var name = req.sessionKey
-  var opts = req.sessionOptions
-
+function tryGetSession (cookies, name, opts) {
   var str = cookies.get(name, opts)
 
   if (!str) {
