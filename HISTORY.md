@@ -14,6 +14,7 @@
   * deps: on-headers@~1.0.2
     - Fix `res.writeHead` patch missing return value
   * deps: safe-buffer@5.2.0
+  * perf: remove internal reference to request from session object
 
 2.0.0-beta.3 / 2017-10-13
 =========================

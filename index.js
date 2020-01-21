@@ -87,8 +87,14 @@ function cookieSession (options) {
         return null
       }
 
-      // get or create session
-      return (sess = tryGetSession(req) || createSession(req))
+      // get session
+      if ((sess = tryGetSession(req))) {
+        return sess
+      }
+
+      // create session
+      debug('new session')
+      return (sess = Session.create())
     }
 
     function setSession (val) {
@@ -100,7 +106,7 @@ function cookieSession (options) {
 
       if (typeof val === 'object') {
         // create a new session
-        sess = Session.create(this, val)
+        sess = Session.create(val)
         return sess
       }
 
@@ -157,8 +163,8 @@ function Session (ctx, obj) {
  * @private
  */
 
-Session.create = function create (req, obj) {
-  var ctx = new SessionContext(req)
+Session.create = function create (obj) {
+  var ctx = new SessionContext()
   return new Session(ctx, obj)
 }
 
@@ -167,8 +173,8 @@ Session.create = function create (req, obj) {
  * @private
  */
 
-Session.deserialize = function deserialize (req, str) {
-  var ctx = new SessionContext(req)
+Session.deserialize = function deserialize (str) {
+  var ctx = new SessionContext()
   var obj = decode(str)
 
   ctx._new = false
@@ -226,27 +232,14 @@ Object.defineProperty(Session.prototype, 'isPopulated', {
 })
 
 /**
- * Session context to tie session to req.
+ * Session context to store metadata.
  *
- * @param {Request} req
  * @private
  */
 
-function SessionContext (req) {
-  this.req = req
-
+function SessionContext () {
   this._new = true
   this._val = undefined
-}
-
-/**
- * Create a new session.
- * @private
- */
-
-function createSession (req) {
-  debug('new session')
-  return Session.create(req)
 }
 
 /**
@@ -294,7 +287,7 @@ function tryGetSession (req) {
   debug('parse %s', str)
 
   try {
-    return Session.deserialize(req, str)
+    return Session.deserialize(str)
   } catch (err) {
     return undefined
   }
