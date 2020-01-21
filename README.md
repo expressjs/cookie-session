@@ -129,6 +129,14 @@ To destroy a session simply set it to `null`:
 req.session = null
 ```
 
+### Saving a session
+
+Since the entire contents of the session is kept in a client-side cookie, the
+session is "saved" by writing a cookie out in a `Set-Cookie` response header.
+This is done automatically if there has been a change made to the session when
+the Node.js response headers are being written to the client and the session
+was not destroyed.
+
 ## Examples
 
 ### Simple view counter example
