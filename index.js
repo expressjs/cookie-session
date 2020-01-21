@@ -116,10 +116,12 @@ function cookieSession (options) {
       try {
         if (sess === false) {
           // remove
+          debug('remove %s', name)
           cookies.set(name, '', req.sessionOptions)
         } else if ((!sess.isNew || sess.isPopulated) && sess.isChanged) {
           // save populated or non-new changed session
-          sess.save()
+          debug('save %s', name)
+          cookies.set(name, Session.serialize(sess), req.sessionOptions)
         }
       } catch (e) {
         debug('error saving session %s', e.message)
@@ -222,23 +224,6 @@ Object.defineProperty(Session.prototype, 'isPopulated', {
     return Object.keys(this).length > 0
   }
 })
-
-/**
- * Save session changes by performing a Set-Cookie.
- * @private
- */
-
-Session.prototype.save = function save () {
-  var ctx = this._ctx
-  var val = Session.serialize(this)
-
-  var cookies = ctx.req.sessionCookies
-  var name = ctx.req.sessionKey
-  var opts = ctx.req.sessionOptions
-
-  debug('save %s', val)
-  cookies.set(name, val, opts)
-}
 
 /**
  * Session context to tie session to req.

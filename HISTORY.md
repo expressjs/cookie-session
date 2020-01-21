@@ -1,6 +1,7 @@
 2.x
 ===
 
+  * Remove private `req.session.save()`
   * Remove undocumented `req.session.length` to free up key name
   * deps: cookies@0.8.0
     - Fix check for default `secure` option behavior
