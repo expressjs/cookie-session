@@ -1,5 +1,5 @@
-2.x
-===
+2.0.0-rc.1 / 2020-01-23
+=======================
 
   * Remove private `req.session.save()`
   * Remove undocumented `req.session.length` to free up key name
