@@ -16,6 +16,7 @@ var Buffer = require('safe-buffer').Buffer
 var debug = require('debug')('cookie-session')
 var Cookies = require('cookies')
 var onHeaders = require('on-headers')
+var crypto = require('crypto')
 
 /**
  * Module exports.
@@ -34,6 +35,7 @@ module.exports = cookieSession
  * @param {boolean} [options.overwrite=true]
  * @param {string} [options.secret]
  * @param {boolean} [options.signed=true]
+ * @param {array} [options.encryptionKeys] The keys used for the crypto
  * @return {function} middleware
  * @public
  */
@@ -125,7 +127,11 @@ function cookieSession (options) {
         } else if ((!sess.isNew || sess.isPopulated) && sess.isChanged) {
           // save populated or non-new changed session
           debug('save %s', name)
-          cookies.set(name, Session.serialize(sess), req.sessionOptions)
+          var serializedSession = Session.serialize(sess)
+          if (opts.encryptionKeys) {
+            serializedSession = encryptString(serializedSession, opts.encryptionKeys[0])
+          }
+          cookies.set(name, serializedSession, req.sessionOptions)
         }
       } catch (e) {
         debug('error saving session %s', e.message)
@@ -278,6 +284,10 @@ function tryGetSession (cookies, name, opts) {
     return undefined
   }
 
+  if (opts.encryptionKeys) {
+    str = decryptString(str, opts.encryptionKeys)
+  }
+
   debug('parse %s', str)
 
   try {
@@ -285,4 +295,43 @@ function tryGetSession (cookies, name, opts) {
   } catch (err) {
     return undefined
   }
+}
+
+function encryptString (cleartext, keyphrase) {
+  var key = crypto
+    .createHash('sha256')
+    .update(keyphrase)
+    .digest()
+
+  var iv = crypto.randomBytes(16)
+
+  var cipher = crypto.createCipheriv('aes256', key, iv)
+  var cipherText = cipher.update(cleartext, 'utf8', 'base64')
+  cipherText += cipher.final('base64')
+  return Buffer.from(iv, 'binary').toString('base64') + '@' + cipherText.toString()
+}
+
+function decryptString (cipherText, keyphrases) {
+  var encodedVi = cipherText.split('@')[0]
+  var encryptedText = cipherText.split('@')[1]
+  var iv = Buffer.from(encodedVi, 'base64')
+  var lastError = null
+  for (var i = 0; i < keyphrases.length; i++) {
+    var keyphrase = keyphrases[i]
+    try {
+      var key = crypto
+        .createHash('sha256')
+        .update(keyphrase)
+        .digest()
+
+      var decipher = crypto.createDecipheriv('aes256', key, iv)
+      var clearText = decipher.update(encryptedText, 'base64', 'utf8')
+      clearText += decipher.final('utf8')
+      return clearText.toString()
+    } catch (e) {
+      lastError = e
+      // ignore and just use the next key
+    }
+  }
+  throw new Error('Could not decrypt the cookie with any key. Caused by \n' + lastError.stack)
 }

@@ -81,6 +81,10 @@ change signature parameters like the algorithm of the signature.
 
 A string which will be used as single key if `keys` is not provided.
 
+##### encryptionKeys
+
+A list of keys used to derive the decryption key for the cookie. The encryption will use a passphrase derived from the first key and a random initialisation vector.
+
 ##### Cookie Options
 
 Other options are passed to `cookies.get()` and `cookies.set()` allowing you

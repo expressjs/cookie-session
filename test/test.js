@@ -1,10 +1,10 @@
-
 process.env.NODE_ENV = 'test'
 
 var assert = require('assert')
 var connect = require('connect')
 var request = require('supertest')
 var session = require('..')
+var Buffer = require('safe-buffer').Buffer
 
 describe('Cookie Session', function () {
   describe('"httpOnly" option', function () {
@@ -195,6 +195,93 @@ describe('Cookie Session', function () {
     })
   })
 
+  describe('when the session is encrypted', function () {
+    it('should still be able to decrypt the cookie', function (done) {
+      var app = App({ encryptionKeys: ['anyString'] })
+      const mySession = {
+        someKey: 'someValue'
+      }
+
+      app.use(function (req, res, next) {
+        if (req.method === 'POST') {
+          req.session = mySession
+          res.statusCode = 200
+          res.end()
+        } else {
+          res.end(JSON.stringify(req.session))
+        }
+      })
+
+      request(app)
+        .post('/')
+        .expect(shouldNotHaveCookieWithValue('session', Buffer.from(JSON.stringify(mySession)).toString('base64')))
+        .expect(200, function (err, res) {
+          if (err) return done(err)
+          request(app)
+            .get('/')
+            .set('Cookie', cookieHeader(cookies(res)))
+            .expect(JSON.stringify(mySession), done)
+        })
+    })
+
+    it('should be able to use a rotated key to decrypt the cookie', function (done) {
+      var app = App({ encryptionKeys: ['anyString'] })
+      var newApp = App({ encryptionKeys: ['newPrimaryKey', 'anyString'] })
+      const mySession = {
+        someKey: 'someValue'
+      }
+
+      app.use(function (req, res, next) {
+        req.session = mySession
+        res.statusCode = 200
+        res.end()
+      })
+
+      newApp.use(function (req, res, next) {
+        res.end(JSON.stringify(req.session))
+      })
+
+      request(app)
+        .post('/')
+        .expect(shouldHaveCookie('session'))
+        .expect(200, function (err, res) {
+          if (err) return done(err)
+          request(newApp)
+            .get('/')
+            .set('Cookie', cookieHeader(cookies(res)))
+            .expect(JSON.stringify(mySession), done)
+        })
+    })
+    it('should not be able to to decrypt the cookie without a propper key', function (done) {
+      var app = App({ encryptionKeys: ['anyString'] })
+      var newApp = App({ encryptionKeys: ['newPrimaryKeyWithoutOldKey'] })
+      const mySession = {
+        someKey: 'someValue'
+      }
+
+      app.use(function (req, res, next) {
+        req.session = mySession
+        res.statusCode = 200
+        res.end()
+      })
+
+      newApp.use(function (req, res, next) {
+        res.end(JSON.stringify(req.session))
+      })
+
+      request(app)
+        .post('/')
+        .expect(shouldHaveCookie('session'))
+        .expect(200, function (err, res) {
+          if (err) return done(err)
+          request(newApp)
+            .get('/')
+            .set('Cookie', cookieHeader(cookies(res)))
+            .expect(500, done)
+        })
+    })
+  })
+
   describe('when the session is invalid', function () {
     it('should create new session', function (done) {
       var app = App({ name: 'my.session', signed: false })
@@ -267,7 +354,7 @@ describe('Cookie Session', function () {
 
       request(app)
         .get('/')
-        .expect(shouldHaveCookie('session'))
+        .expect(shouldHaveCookieWithValue('session', Buffer.from(JSON.stringify({ message: 'hello' })).toString('base64')))
         .expect(200, function (err, res) {
           if (err) return done(err)
           cookie = cookieHeader(cookies(res))
@@ -554,6 +641,13 @@ function shouldHaveCookieWithValue (name, value) {
   return function (res) {
     assert.ok((name in cookies(res)), 'should have cookie "' + name + '"')
     assert.strictEqual(cookies(res)[name].value, value)
+  }
+}
+
+function shouldNotHaveCookieWithValue (name, value) {
+  return function (res) {
+    assert.ok((name in cookies(res)), 'should have cookie "' + name + '"')
+    assert.notStrictEqual(cookies(res)[name].value, value)
   }
 }
 
