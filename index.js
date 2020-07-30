@@ -297,6 +297,9 @@ function tryGetSession (cookies, name, opts) {
   }
 }
 
+var inputEncoding = 'base64'
+var outputEncoding = 'base64'
+
 function encryptString (cleartext, keyphrase) {
   var key = crypto
     .createHash('sha256')
@@ -306,15 +309,15 @@ function encryptString (cleartext, keyphrase) {
   var iv = crypto.randomBytes(16)
 
   var cipher = crypto.createCipheriv('aes256', key, iv)
-  var cipherText = cipher.update(cleartext, 'utf8', 'base64')
-  cipherText += cipher.final('base64')
-  return Buffer.from(iv, 'binary').toString('base64') + '@' + cipherText.toString()
+  var cipherText = cipher.update(cleartext, inputEncoding, outputEncoding)
+  cipherText += cipher.final(outputEncoding)
+  return Buffer.from(iv, 'binary').toString(outputEncoding) + '@' + cipherText.toString()
 }
 
 function decryptString (cipherText, keyphrases) {
   var encodedVi = cipherText.split('@')[0]
   var encryptedText = cipherText.split('@')[1]
-  var iv = Buffer.from(encodedVi, 'base64')
+  var iv = Buffer.from(encodedVi, outputEncoding)
   var lastError = null
   for (var i = 0; i < keyphrases.length; i++) {
     var keyphrase = keyphrases[i]
@@ -325,8 +328,8 @@ function decryptString (cipherText, keyphrases) {
         .digest()
 
       var decipher = crypto.createDecipheriv('aes256', key, iv)
-      var clearText = decipher.update(encryptedText, 'base64', 'utf8')
-      clearText += decipher.final('utf8')
+      var clearText = decipher.update(encryptedText, outputEncoding, inputEncoding)
+      clearText += decipher.final(inputEncoding)
       return clearText.toString()
     } catch (e) {
       lastError = e
