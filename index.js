@@ -45,6 +45,7 @@ function cookieSession (options) {
   var name = opts.name || 'session'
 
   // secrets
+  var secureProxy = opts.secureProxy || false;
   var keys = opts.keys
   if (!keys && opts.secret) keys = [opts.secret]
 
@@ -59,7 +60,8 @@ function cookieSession (options) {
 
   return function _cookieSession (req, res, next) {
     var cookies = new Cookies(req, res, {
-      keys: keys
+      keys: keys,
+      secure: secureProxy,
     })
     var sess
 
