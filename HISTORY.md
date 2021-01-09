@@ -1,6 +1,7 @@
 unreleased
 ==========
 
+  * deps: debug@3.2.7
   * deps: safe-buffer@5.2.1
 
 2.0.0-rc.1 / 2020-01-23
