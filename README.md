@@ -243,7 +243,7 @@ app.use(cookieSession({
 ### Max Cookie Size
 
 Because the entire session object is encoded and stored in a cookie, it is
-possible to exceed the maxium cookie size limits on different browsers. The
+possible to exceed the maximum cookie size limits on different browsers. The
 [RFC6265 specification](https://tools.ietf.org/html/rfc6265#section-6.1)
 recommends that a browser **SHOULD** allow
 
