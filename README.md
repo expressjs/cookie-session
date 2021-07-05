@@ -81,6 +81,10 @@ change signature parameters like the algorithm of the signature.
 
 A string which will be used as single key if `keys` is not provided.
 
+##### connectionSecure
+
+Flag passed to [cookies module](https://www.npmjs.org/package/cookies#readme), to explicitally specify if the connection is secure.
+
 ##### Cookie Options
 
 Other options are passed to `cookies.get()` and `cookies.set()` allowing you
