@@ -166,6 +166,23 @@ describe('Cookie Session', function () {
           .expect(shouldNotSetCookies())
           .expect(200, done)
       })
+
+      describe('when options.connectionSecure = true', function () {
+        it('should Set-Cookie', function (done) {
+          var app = App({ secure: true, connectionSecure: true })
+          app.use(function (req, res, next) {
+            process.nextTick(function () {
+              req.session.message = 'hello!'
+              res.end('greetings')
+            })
+          })
+
+          request(app)
+            .get('/')
+            .expect(shouldHaveCookie('session'))
+            .expect(200, done)
+        })
+      })
     })
   })
 

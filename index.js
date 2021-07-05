@@ -30,6 +30,7 @@ module.exports = cookieSession
  * @param {object} [options]
  * @param {boolean} [options.httpOnly=true]
  * @param {array} [options.keys]
+ * @param {boolean} [options.connectionSecure]
  * @param {string} [options.name=session] Name of the cookie to use
  * @param {boolean} [options.overwrite=true]
  * @param {string} [options.secret]
@@ -48,6 +49,12 @@ function cookieSession (options) {
   var keys = opts.keys
   if (!keys && opts.secret) keys = [opts.secret]
 
+  // connectionSecure
+  var connectionSecure =
+    typeof opts.connectionSecure === 'boolean'
+      ? opts.connectionSecure
+      : undefined
+
   // defaults
   if (opts.overwrite == null) opts.overwrite = true
   if (opts.httpOnly == null) opts.httpOnly = true
@@ -59,7 +66,8 @@ function cookieSession (options) {
 
   return function _cookieSession (req, res, next) {
     var cookies = new Cookies(req, res, {
-      keys: keys
+      keys: keys,
+      secure: connectionSecure
     })
     var sess
 
