@@ -26,6 +26,11 @@ signing to prevent tampering. The client will be able to read the session data b
 examining the cookie's value. Secret data should not be set in `req.session` without
 encrypting it, or use a server-side session instead.
 
+**NOTE** This module does not prevent session replay, as the expiration set is that
+of the cookie only; if that is a concern of your application, you can store an expiration
+date in `req.session` object and validate it on the sever, and implement any other logic
+to extend the session as your application needs.
+
 ## Install
 
 This is a [Node.js](https://nodejs.org/en/) module available through the
