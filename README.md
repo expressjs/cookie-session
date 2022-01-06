@@ -135,7 +135,7 @@ altered to change cookie setting behavior on a per-request basis.
 
 To destroy a session simply set it to `null`:
 
-```
+```js
 req.session = null
 ```
 
