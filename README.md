@@ -21,6 +21,11 @@ The following points can help you choose which to use:
   * `cookie-session` can be used to store a "light" session and include an identifier
     to look up a database-backed secondary store to reduce database lookups.
 
+**NOTE** This module does not encrypt the session contents in the cookie, only provides
+signing to prevent tampering. The client will be able to read the session data by
+examining the cookie's value. Secret data should not be set in `req.session` without
+encrypting it, or use a server-side session instead.
+
 ## Install
 
 This is a [Node.js](https://nodejs.org/en/) module available through the
