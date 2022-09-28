@@ -27,7 +27,7 @@
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-markdown": "3.0.0",
     "eslint-plugin-node": "11.1.0",
-    "eslint-plugin-promise": "6.0.0",
+    "eslint-plugin-promise": "6.0.1",
     "eslint-plugin-standard": "4.1.0",
     "mocha": "9.2.2",
     "nyc": "15.1.0",
