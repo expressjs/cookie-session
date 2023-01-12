@@ -31,6 +31,9 @@ module.exports = cookieSession
  * @param {boolean} [options.httpOnly=true]
  * @param {array} [options.keys]
  * @param {string} [options.name=session] Name of the cookie to use
+ * @param {string} [options.sessionName=session] The key on `request.sessions`
+ *   through which the session can be accessed. Sessions with sessionName
+ *   'session' (the default) will always be accessible at `req.session`.
  * @param {boolean} [options.overwrite=true]
  * @param {string} [options.secret]
  * @param {boolean} [options.signed=true]
@@ -39,23 +42,24 @@ module.exports = cookieSession
  */
 
 function cookieSession (options) {
-  var opts = options || {}
+  var opts = Object.create(options || {})
 
-  // cookie name
-  var name = opts.name || 'session'
+  // defaults
+  opts.name ??= 'session'
+  opts.sessionName ??= 'session'
+  opts.overwrite ??= true
+  opts.httpOnly ??= true
+  opts.signed ??= true
 
   // secrets
   var keys = opts.keys
-  if (!keys && opts.secret) keys = [opts.secret]
+  if ((!keys || !keys.length) && opts.secret) keys = [opts.secret]
 
-  // defaults
-  if (opts.overwrite == null) opts.overwrite = true
-  if (opts.httpOnly == null) opts.httpOnly = true
-  if (opts.signed == null) opts.signed = true
+  if (!keys && opts.signed) {
+    throw new Error("If '.signed' is true, '.keys' or '.secret' are required.")
+  }
 
-  if (!keys && opts.signed) throw new Error('.keys required.')
-
-  debug('session options %j', opts)
+  debug('%s session options %j', opts.name, opts)
 
   return function _cookieSession (req, res, next) {
     var cookies = new Cookies(req, res, {
@@ -64,10 +68,34 @@ function cookieSession (options) {
     var sess
 
     // for overriding
-    req.sessionOptions = Object.create(opts)
+    var overrideOptions = Object.create(opts)
 
-    // define req.session getter / setter
-    Object.defineProperty(req, 'session', {
+    // If the name is session, add classic accessors for backwards compatibility
+    if (opts.sessionName === 'session') {
+      // for overriding
+      req.sessionOptions = overrideOptions
+
+      // define req.session getter / setter
+      Object.defineProperty(req, 'session', {
+        configurable: true,
+        enumerable: true,
+        get: getSession,
+        set: setSession
+      })
+    }
+
+    if (!('sessions' in req)) {
+      req.sessions = {}
+    }
+    if (!('sessionsOptions' in req)) {
+      req.sessionsOptions = {}
+    }
+
+    // for overriding
+    req.sessionsOptions[opts.sessionName] = overrideOptions
+
+    // define req.sessions[sessionName] getter / setter
+    Object.defineProperty(req.sessions, opts.sessionName, {
       configurable: true,
       enumerable: true,
       get: getSession,
@@ -86,12 +114,14 @@ function cookieSession (options) {
       }
 
       // get session
-      if ((sess = tryGetSession(cookies, name, req.sessionOptions))) {
+      if ((sess = tryGetSession(
+        cookies, opts.name, req.sessionsOptions[opts.sessionName]
+      ))) {
         return sess
       }
 
       // create session
-      debug('new session')
+      debug('new %s session', opts.name)
       return (sess = Session.create())
     }
 
@@ -120,26 +150,30 @@ function cookieSession (options) {
       try {
         if (sess === false) {
           // remove
-          debug('remove %s', name)
-          cookies.set(name, '', req.sessionOptions)
+          debug('remove %s', opts.name)
+          cookies.set(opts.name, '', req.sessionsOptions[opts.sessionName])
         } else if ((!sess.isNew || sess.isPopulated) && sess.isChanged) {
           // save populated or non-new changed session
-          debug('save %s', name)
-          cookies.set(name, Session.serialize(sess), req.sessionOptions)
+          debug('save %s', opts.name)
+          cookies.set(
+            opts.name,
+            Session.serialize(sess),
+            req.sessionsOptions[opts.sessionName]
+          )
         }
       } catch (e) {
-        debug('error saving session %s', e.message)
+        debug('error saving session %s: %s', opts.name, e.message)
       }
     })
 
     next()
   }
-};
+}
 
 /**
  * Session model.
  *
- * @param {Context} ctx
+ * @param {SessionContext} ctx
  * @param {Object} obj
  * @private
  */
@@ -278,7 +312,7 @@ function tryGetSession (cookies, name, opts) {
     return undefined
   }
 
-  debug('parse %s', str)
+  debug('parsing %s session: %s', name, str)
 
   try {
     return Session.deserialize(str)
