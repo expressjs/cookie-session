@@ -16,6 +16,7 @@ var Buffer = require('safe-buffer').Buffer
 var debug = require('debug')('cookie-session')
 var Cookies = require('cookies')
 var onHeaders = require('on-headers')
+var flatten = require('array-flatten')
 
 /**
  * Module exports.
@@ -24,32 +25,66 @@ var onHeaders = require('on-headers')
 
 module.exports = cookieSession
 
+var defaultConfiguration = {
+  name: 'session',
+  sessionName: 'session',
+  overwrite: true,
+  httpOnly: true,
+  signed: true,
+}
+
+/**
+ * @typedef Configuration
+ *
+ * @type {object}
+ * @property {boolean} [httpOnly=true]
+ * @property {array} [keys]
+ * @property {string} [name=session] - Name of the cookie to use
+ * @property {string} [sessionName=session] - The key on `request.sessions`
+ *   through which the session can be accessed. Sessions with sessionName
+ *   'session' (the default) will always be accessible at `req.session`.
+ * @property {boolean} [overwrite=true]
+ * @property {string} [secret]
+ * @property {boolean} [signed=true]
+ */
+
 /**
  * Create a new cookie session middleware.
  *
- * @param {object} [options]
- * @param {boolean} [options.httpOnly=true]
- * @param {array} [options.keys]
- * @param {string} [options.name=session] Name of the cookie to use
- * @param {string} [options.sessionName=session] The key on `request.sessions`
- *   through which the session can be accessed. Sessions with sessionName
- *   'session' (the default) will always be accessible at `req.session`.
- * @param {boolean} [options.overwrite=true]
- * @param {string} [options.secret]
- * @param {boolean} [options.signed=true]
- * @return {function} middleware
+ * @param {...Configuration|Configuration[]} configurations
+ * @return {function} middleware function
  * @public
  */
+function cookieSession (configurations) {
+  var configs = flatten(Array.prototype.slice.call(arguments), null)
+  switch (configs.length) {
+    case 0:
+      configs = [{}]
+      break
+    case 1:
+      break
+    default:
+      ['name', 'sessionName'].forEach(function throwIfDupName(nameKind) {
+        var names = Object.create(null)
+        configs.forEach(function checkUniqueness(c) {
+          var name = c[nameKind] || 'null'
+          if (name in names) {
+            throw new Error('Each configuration must have a unique ' + nameKind)
+          } else {
+            names[name] = true
+          }
+        })
+      })
+  }
+  return compose(configs.map(createCookieSessionMiddleware))
+}
 
-function cookieSession (options) {
-  var opts = Object.create(options || {})
-
-  // defaults
-  opts.name ??= 'session'
-  opts.sessionName ??= 'session'
-  opts.overwrite ??= true
-  opts.httpOnly ??= true
-  opts.signed ??= true
+function createCookieSessionMiddleware(config) {
+  // Options inherit from config but with defaults applied
+  var opts = Object.create(config)
+  Object.keys(defaultConfiguration).forEach(function applyDefaults(k) {
+    if (opts[k] == null) opts[k] = defaultConfiguration[k]
+  })
 
   // secrets
   var keys = opts.keys
@@ -61,7 +96,7 @@ function cookieSession (options) {
 
   debug('%s session options %j', opts.name, opts)
 
-  return function _cookieSession (req, res, next) {
+  return function cookieSessionMiddleware (req, res, next) {
     var cookies = new Cookies(req, res, {
       keys: keys
     })
@@ -168,6 +203,27 @@ function cookieSession (options) {
 
     next()
   }
+}
+
+/**
+ * Compose a non-empty array of middleware into one function
+ * @param {function[]} middlewares - middleware functions
+ * @return {function} middleware function
+ */
+function compose(middlewares) {
+  var head = middlewares[0]
+  var tail = middlewares.slice(1)
+
+  if (!tail.length) {
+    return head;
+  }
+
+  return function(req, res, next) {
+    head(req, res, function(err) {
+      if (err) return next(err);
+      compose(tail)(req, res, next);
+    });
+  };
 }
 
 /**

@@ -162,6 +162,21 @@ describe('Cookie Session', function () {
     })
   })
 
+  describe('when two cookies are configured with the same name', function () {
+    it("should error if the cookies have the same name", function (done) {
+      assert.throws(function() {
+        App({}, {sessionName: 'secondary'})
+      })
+      done()
+    })
+    it("should error if the cookies have the same SessionName", function (done) {
+      assert.throws(function() {
+        App({}, {name: 'secondary'})
+      })
+      done()
+    })
+  })
+
   describe('when multiple cookieSessions are required', function () {
     var app
     it("multiple configs to be passed to cookieSession in an array", function () {
@@ -615,17 +630,19 @@ describe('Cookie Session', function () {
 
 /**
  * Connect to an app using cookie-sessions with passed configurations
- * @param {...object} configurations
+ * @param {...Configuration} configurations
  * @return {app}
  */
 function App (configurations) {
   var app = connect()
   var configs = arguments.length ? Array.prototype.slice.call(arguments) : [{}]
-  configs.forEach(function addKeyBasedSession(configuration) {
-    var config = Object.create(configuration)
-    config.keys = ['a', 'b']
-    app.use(session(config))
+  var keyedConfigs = configs.map(function addKeys(configuration) {
+    return Object.create(configuration, { keys: {
+      value: ['a', 'b'],
+      enumerable: true,
+    }})
   })
+  app.use(session(keyedConfigs))
   return app
 }
 

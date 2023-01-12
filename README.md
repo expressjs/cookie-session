@@ -63,7 +63,8 @@ you have identifying information to store for the session.
 If the session contents change rarely, you may wish to intervene to prolong
 sessions, as described [below](#extending-the-session-expiration).
 
-This middleware can be used multiple times to create several cookie-sessions.
+You can create multiple cookie-sessions by passing multiple [options](#options)
+objects to `cookieSession`.
 But note that their [`names`](#name), as well as their
 [`sessionNames`](#sessionname), must be distinct.
 
@@ -311,14 +312,12 @@ var express = require('express')
 
 var app = express()
 
-// One cookie not available to client-side JS
 app.use(cookieSession({
+  // One cookie not available to client-side JS
   // name & sessionName default to 'session'
   secret: 'topSecret'
-}))
-
-// Another cookie. This one can be accessed by client-side JS.
-app.use(cookieSession({
+}, {
+  // Another cookie. This one can be accessed by client-side JS.
   name: 'insecureSession',
   sessionName: 'insecureSession',
   httpOnly: false,
