@@ -13,7 +13,7 @@
  */
 
 var Buffer = require('safe-buffer').Buffer
-var debug = require('debug')('cookie-session')
+var debug = require('debug')
 var Cookies = require('cookies')
 var onHeaders = require('on-headers')
 var flatten = require('array-flatten')
@@ -94,7 +94,9 @@ function createCookieSessionMiddleware(config) {
     throw new Error("If '.signed' is true, '.keys' or '.secret' are required.")
   }
 
-  debug('%s session options %j', opts.name, opts)
+  // Debug namespace
+  var sessionDebug = debug('cookie-session:' + opts.name)
+  sessionDebug('Session options %j', opts)
 
   return function cookieSessionMiddleware (req, res, next) {
     var cookies = new Cookies(req, res, {
@@ -150,13 +152,13 @@ function createCookieSessionMiddleware(config) {
 
       // get session
       if ((sess = tryGetSession(
-        cookies, opts.name, req.sessionsOptions[opts.sessionName]
+        cookies, opts.name, req.sessionsOptions[opts.sessionName], sessionDebug
       ))) {
         return sess
       }
 
       // create session
-      debug('new %s session', opts.name)
+      sessionDebug('session created')
       return (sess = Session.create())
     }
 
@@ -185,11 +187,11 @@ function createCookieSessionMiddleware(config) {
       try {
         if (sess === false) {
           // remove
-          debug('remove %s', opts.name)
+          sessionDebug('session removed')
           cookies.set(opts.name, '', req.sessionsOptions[opts.sessionName])
         } else if ((!sess.isNew || sess.isPopulated) && sess.isChanged) {
           // save populated or non-new changed session
-          debug('save %s', opts.name)
+          sessionDebug('save %s', opts.name)
           cookies.set(
             opts.name,
             Session.serialize(sess),
@@ -197,7 +199,7 @@ function createCookieSessionMiddleware(config) {
           )
         }
       } catch (e) {
-        debug('error saving session %s: %s', opts.name, e.message)
+        sessionDebug('error saving session: %s', e.message)
       }
     })
 
@@ -361,14 +363,14 @@ function encode (body) {
  * @private
  */
 
-function tryGetSession (cookies, name, opts) {
+function tryGetSession (cookies, name, opts, log) {
   var str = cookies.get(name, opts)
 
   if (!str) {
     return undefined
   }
 
-  debug('parsing %s session: %s', name, str)
+  log('parsing session: %s', str)
 
   try {
     return Session.deserialize(str)
