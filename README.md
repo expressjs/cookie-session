@@ -56,10 +56,17 @@ the loaded session. This session is either a new session if no valid session was
 provided in the request, or a loaded session from the request.
 
 The middleware will automatically add a `Set-Cookie` header to the response if the
-contents of `req.session` were altered. _Note_ that no `Set-Cookie` header will be
+contents of the session were altered. _Note_ that no `Set-Cookie` header will be
 in the response (and thus no session created for a specific user) unless there are
 contents in the session, so be sure to add something to `req.session` as soon as
 you have identifying information to store for the session.
+If the session contents change rarely, you may wish to intervene to prolong
+sessions, as described [below](#extending-the-session-expiration).
+
+You can create multiple cookie-sessions by passing multiple [options](#options)
+objects to `cookieSession`.
+But note that their [`names`](#name), as well as their
+[`sessionNames`](#sessionname), must be distinct.
 
 #### Options
 
@@ -68,6 +75,27 @@ Cookie session accepts these properties in the options object.
 ##### name
 
 The name of the cookie to set, defaults to `session`.
+If you are using multiple cookie-sessions, give each a unique `name`.
+
+##### sessionName
+
+The name of the session.
+Defaults to `"session"`.
+
+To avoid confusion, it is sensible to choose the same value as [`name`](#name).
+
+Sessions with the default name will be accessible at `req.session`, and their
+[options](#reqsessionoptions) will be accessible at `req.sessionOptions`.
+
+The session data will always be accessible on the `req.sessions` object, at the
+property matching your sessionName.
+e.g. for sessionName `"foo"`, you can access the session at `req.sessions.foo`.
+
+Similarly, the [options](#reqsessionoptions) for each session will always be
+accessible on the `req.sessionsOptions` object.
+E.g. `"foo"`'s options will be at `req.sessionsOptions.foo`.
+
+To create multiple cookie-sessions, give each a unique `sessionName`.
 
 ##### keys
 
@@ -99,29 +127,26 @@ The options can also contain any of the following (for the full list, see
   - `signed`: a boolean indicating whether the cookie is to be signed (`true` by default).
   - `overwrite`: a boolean indicating whether to overwrite previously set cookies of the same name (`true` by default).
 
-### req.session
+### Accessing sessions
 
-Represents the session for the given request.
+Session data can always be accessed via the property on[
+`req.sessions`](#reqsessions) matching their [sessionName](#sessionname).
+Sessions with the default [sessionName](#sessionname), `"session"`, can also be
+accessed at [`req.session`](#reqsession).
 
-#### .isChanged
+#### req.session
 
-Is `true` if the session has been changed during the request.
+The session data for the session with [sessionName](#sessionname) "session" (the
+default). `undefined` if there is no session with [sessionName](#sessionname)
+"session".
 
-#### .isNew
+#### req.sessions
 
-Is `true` if the session is new.
+Provides access to the data for all sessions, keyed by their
+[sessionName](#sessionname).
+E.g. for sessionName `"foo"`, you can access the session at `req.sessions.foo`.
 
-#### .isPopulated
-
-Determine if the session has been populated with data or is empty.
-
-### req.sessionOptions
-
-Represents the session options for the current request. These options are a
-shallow clone of what was provided at middleware construction and can be
-altered to change cookie setting behavior on a per-request basis.
-
-### Destroying a session
+#### Destroying a session
 
 To destroy a session simply set it to `null`:
 
@@ -129,13 +154,53 @@ To destroy a session simply set it to `null`:
 req.session = null
 ```
 
-### Saving a session
+#### Saving a session
 
 Since the entire contents of the session is kept in a client-side cookie, the
 session is "saved" by writing a cookie out in a `Set-Cookie` response header.
 This is done automatically if there has been a change made to the session when
 the Node.js response headers are being written to the client and the session
 was not destroyed.
+
+#### Session properties
+
+Sessions always have the following properties, in addition to any you define:
+
+##### .isChanged
+
+Is `true` if the session has been changed during the request.
+
+##### .isNew
+
+Is `true` if the session is new.
+
+##### .isPopulated
+
+Determine if the session has been populated with data or is empty.
+
+#### Session options
+
+These options inherit from the options provided at middleware construction and
+can be altered to change cookie setting behavior on a per-request basis.
+
+The options for each session can always be accessed via the property on
+[`req.sessionsOptions`](#reqsessionsoptions) matching their
+[sessionName](#sessionname).
+Sessions with the default [sessionName](#sessionname), `"session"`, can also be
+accessed at [`req.sessionOptions`](#reqsession).
+
+##### req.sessionOptions
+
+The session options for the session with [sessionName](#sessionname) `"session"`
+(the default).
+`undefined` if there is no session with [sessionName](#sessionname) `"session"`.
+
+##### req.sessionsOptions
+
+Provides access to the options for all sessions, keyed by their
+[sessionName](#sessionname).
+E.g. for sessionName `"foo"`, you can access the session options at
+`req.sessionsOptions.foo`.
 
 ## Examples
 
@@ -238,6 +303,42 @@ app.use(cookieSession({
 // ... your logic here ...
 ```
 
+### Setting multiple cookies
+This example sets a session cookie that the server can trust, and an insecure
+session cookie that is just used to make some metadata available to the client.
+```js
+var cookieSession = require('cookie-session')
+var express = require('express')
+
+var app = express()
+
+app.use(cookieSession({
+  // One cookie not available to client-side JS
+  // name & sessionName default to 'session'
+  secret: 'topSecret'
+}, {
+  // Another cookie. This one can be accessed by client-side JS.
+  name: 'insecureSession',
+  sessionName: 'insecureSession',
+  httpOnly: false,
+  signed: false
+}))
+
+app.get('/', function (req, res, next) {
+  // Set secure session data
+  req.session.signedStuff ||= "shibboleth"
+  // Update insecure session data. (This is just an FYI for the client. The
+  // server must not trust it to authenticate users!)
+  const tomorrow = new Date(Date.now() + 24 * 60 * 60e3)
+  req.sessions.insecureSession.sessionExpiry = tomorrow
+  next()
+})
+
+// ... your logic here ...
+
+app.listen(3000)
+```
+
 ## Usage Limitations
 
 ### Max Cookie Size
@@ -251,7 +352,7 @@ recommends that a browser **SHOULD** allow
 > the cookie's name, value, and attributes)
 
 In practice this limit differs slightly across browsers. See a list of
-[browser limits here](http://browsercookielimits.squawky.net/). As a rule
+[browser limits here](http://browsercookielimits.iain.guru). As a rule
 of thumb **don't exceed 4093 bytes per domain**.
 
 If your session object is large enough to exceed a browser limit when encoded,
