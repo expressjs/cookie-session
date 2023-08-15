@@ -110,7 +110,7 @@ jobs:
           node-version: "18.17"
 
         - name: Node.js 19.x
-          node-version: "19.3"
+          node-version: "19.9"
 
         - name: Node.js 20.x
           node-version: "20.5"
