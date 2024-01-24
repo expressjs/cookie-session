@@ -1,3 +1,15 @@
+unreleased
+==========
+
+  * deps: cookies@0.9.1
+    - Add `partitioned` option for CHIPS support
+    - Add `priority` option for Priority cookie support
+    - Fix accidental cookie name/value truncation when given invalid chars
+    - Fix `maxAge` option to reject invalid values
+    - Remove quotes from returned quoted cookie value
+    - Use `req.socket` over deprecated `req.connection`
+    - pref: small lookup regexp optimization
+
 2.0.0 / 2021-12-16
 ==================
 
