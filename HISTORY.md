@@ -1,6 +1,7 @@
 unreleased
 ==========
 
+  * Fix loading sessions with special keys
   * deps: cookies@0.9.1
     - Add `partitioned` option for CHIPS support
     - Add `priority` option for Priority cookie support

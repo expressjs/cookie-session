@@ -151,7 +151,9 @@ function Session (ctx, obj) {
 
   if (obj) {
     for (var key in obj) {
-      this[key] = obj[key]
+      if (!(key in this)) {
+        this[key] = obj[key]
+      }
     }
   }
 }

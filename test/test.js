@@ -479,8 +479,21 @@ describe('Cookie Session', function () {
       it('should create a session', function (done) {
         var app = App()
         app.use(function (req, res, next) {
-          req.session = { message: 'hello' }
+          req.session = { message: 'hello', foo: 'bar', isChanged: true }
           res.end('klajsdfasdf')
+        })
+
+        request(app)
+          .get('/')
+          .expect(shouldHaveCookie('session'))
+          .expect(200, done)
+      })
+
+      it('should not error on special properties', function (done) {
+        var app = App()
+        app.use(function (req, res) {
+          req.session = { message: 'hello', isChanged: false }
+          res.end()
         })
 
         request(app)
@@ -526,6 +539,30 @@ describe('Cookie Session', function () {
 
         request(app)
           .get('/')
+          .expect(200, 'true', done)
+      })
+
+      it('should be true loading session', function (done) {
+        var app = App({ signed: false })
+        app.use(function (req, res) {
+          res.end(String(req.session.isPopulated))
+        })
+
+        request(app)
+          .get('/')
+          .set('Cookie', 'session=eyJtZXNzYWdlIjoiaGkifQ==')
+          .expect(200, 'true', done)
+      })
+
+      it('should not conflict with session value', function (done) {
+        var app = App({ signed: false })
+        app.use(function (req, res) {
+          res.end(String(req.session.isPopulated))
+        })
+
+        request(app)
+          .get('/')
+          .set('Cookie', 'session=eyJtZXNzYWdlIjoiaGkiLCJpc1BvcHVsYXRlZCI6ZmFsc2V9')
           .expect(200, 'true', done)
       })
     })
