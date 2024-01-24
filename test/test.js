@@ -89,36 +89,113 @@ describe('Cookie Session', function () {
 
   describe('when options.signed = true', function () {
     describe('when options.keys are set', function () {
-      it('should work', function (done) {
-        var app = connect()
-        app.use(session({
-          keys: ['a', 'b']
-        }))
-        app.use(function (req, res, next) {
+      before(function () {
+        this.app = connect()
+        this.app.use(session({ keys: ['a', 'b'] }))
+        this.app.use('/get', function (req, res) {
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify(req.session))
+        })
+        this.app.use('/set', function (req, res) {
           req.session.message = 'hi'
           res.end()
         })
+      })
 
-        request(app)
-          .get('/')
+      it('should set cookie signature', function (done) {
+        request(this.app)
+          .get('/set')
+          .expect(shouldHaveCookie('session'))
+          .expect(shouldHaveCookie('session.sig'))
           .expect(200, '', done)
+      })
+
+      it('should set cookie signature with first key', function (done) {
+        request(this.app)
+          .get('/set')
+          .expect(shouldHaveCookieWithValue('session', 'eyJtZXNzYWdlIjoiaGkifQ=='))
+          .expect(shouldHaveCookieWithValue('session.sig', 'vdp2-kj-91tgzbWcV1QzofT3hu0'))
+          .expect(200, '', done)
+      })
+
+      it('should accept session with signature', function (done) {
+        request(this.app)
+          .get('/get')
+          .set('Cookie', 'session=eyJtZXNzYWdlIjoiaGkifQ==; session.sig=vdp2-kj-91tgzbWcV1QzofT3hu0')
+          .expect(200, { message: 'hi' }, done)
+      })
+
+      it('should accept session with secondary signature', function (done) {
+        request(this.app)
+          .get('/get')
+          .set('Cookie', 'session=eyJtZXNzYWdlIjoiaGkifQ==; session.sig=SiRRAEncekXEzVdvey_7SkWaMM4')
+          .expect(200, { message: 'hi' }, done)
+      })
+
+      it('should reject session with invalid signature', function (done) {
+        request(this.app)
+          .get('/get')
+          .set('Cookie', 'session=eyJtZXNzYWdlIjoiaGkifQ==; session.sig=foobar')
+          .expect(200, {}, done)
+      })
+
+      it('should reject session with no signature', function (done) {
+        request(this.app)
+          .get('/get')
+          .set('Cookie', 'session=eyJtZXNzYWdlIjoiaGkifQ==')
+          .expect(200, {}, done)
       })
     })
 
     describe('when options.secret is set', function () {
-      it('should work', function (done) {
-        var app = connect()
-        app.use(session({
-          secret: 'a'
-        }))
-        app.use(function (req, res, next) {
+      before(function () {
+        this.app = connect()
+        this.app.use(session({ secret: 'a' }))
+        this.app.use('/get', function (req, res) {
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify(req.session))
+        })
+        this.app.use('/set', function (req, res) {
           req.session.message = 'hi'
           res.end()
         })
+      })
 
-        request(app)
-          .get('/')
+      it('should set cookie signature', function (done) {
+        request(this.app)
+          .get('/set')
+          .expect(shouldHaveCookie('session'))
+          .expect(shouldHaveCookie('session.sig'))
           .expect(200, '', done)
+      })
+
+      it('should set cookie signature with only key', function (done) {
+        request(this.app)
+          .get('/set')
+          .expect(shouldHaveCookieWithValue('session', 'eyJtZXNzYWdlIjoiaGkifQ=='))
+          .expect(shouldHaveCookieWithValue('session.sig', 'vdp2-kj-91tgzbWcV1QzofT3hu0'))
+          .expect(200, '', done)
+      })
+
+      it('should accept session with signature', function (done) {
+        request(this.app)
+          .get('/get')
+          .set('Cookie', 'session=eyJtZXNzYWdlIjoiaGkifQ==; session.sig=vdp2-kj-91tgzbWcV1QzofT3hu0')
+          .expect(200, { message: 'hi' }, done)
+      })
+
+      it('should reject session with invalid signature', function (done) {
+        request(this.app)
+          .get('/get')
+          .set('Cookie', 'session=eyJtZXNzYWdlIjoiaGkifQ==; session.sig=foobar')
+          .expect(200, {}, done)
+      })
+
+      it('should reject session with no signature', function (done) {
+        request(this.app)
+          .get('/get')
+          .set('Cookie', 'session=eyJtZXNzYWdlIjoiaGkifQ==')
+          .expect(200, {}, done)
       })
     })
 
@@ -126,27 +203,45 @@ describe('Cookie Session', function () {
       it('should throw', function () {
         assert.throws(function () {
           session()
-        })
+        }, /\.keys required/)
       })
     })
   })
 
   describe('when options.signed = false', function () {
-    describe('when app.keys are not set', function () {
-      it('should work', function (done) {
-        var app = connect()
-        app.use(session({
-          signed: false
-        }))
-        app.use(function (req, res, next) {
-          req.session.message = 'hi'
-          res.end()
-        })
-
-        request(app)
-          .get('/')
-          .expect(200, done)
+    before(function () {
+      this.app = connect()
+      this.app.use(session({ signed: false }))
+      this.app.use('/get', function (req, res) {
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify(req.session))
       })
+      this.app.use('/set', function (req, res) {
+        req.session.message = 'hi'
+        res.end()
+      })
+    })
+
+    it('should not set cookie signature', function (done) {
+      request(this.app)
+        .get('/set')
+        .expect(shouldHaveCookie('session'))
+        .expect(shouldNotHaveCookie('session.sig'))
+        .expect(200, done)
+    })
+
+    it('should accept session without signature', function (done) {
+      request(this.app)
+        .get('/get')
+        .set('Cookie', 'session=eyJtZXNzYWdlIjoiaGkifQ==')
+        .expect(200, { message: 'hi' }, done)
+    })
+
+    it('should accept session with invalid signature', function (done) {
+      request(this.app)
+        .get('/get')
+        .set('Cookie', 'session=eyJtZXNzYWdlIjoiaGkifQ==; session.sig=foobar')
+        .expect(200, { message: 'hi' }, done)
     })
   })
 
@@ -554,6 +649,12 @@ function shouldHaveCookieWithValue (name, value) {
   return function (res) {
     assert.ok((name in cookies(res)), 'should have cookie "' + name + '"')
     assert.strictEqual(cookies(res)[name].value, value)
+  }
+}
+
+function shouldNotHaveCookie (name) {
+  return function (res) {
+    assert.ok(!(name in cookies(res)), 'should not have cookie "' + name + '"')
   }
 }
 
