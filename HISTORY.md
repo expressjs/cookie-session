@@ -1,5 +1,5 @@
-unreleased
-==========
+2.1.0 / 2024-01-23
+==================
 
   * Fix loading sessions with special keys
   * deps: cookies@0.9.1
