@@ -59,7 +59,8 @@ function cookieSession (options) {
 
   return function _cookieSession (req, res, next) {
     var cookies = new Cookies(req, res, {
-      keys: keys
+      keys: keys,
+      secure: opts.secure
     })
     var sess
 
