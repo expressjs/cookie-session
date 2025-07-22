@@ -14,6 +14,10 @@
     "session"
   ],
   "repository": "expressjs/cookie-session",
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/express"
+  },
   "dependencies": {
     "cookies": "0.9.1",
     "debug": "3.2.7",
