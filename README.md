@@ -250,6 +250,54 @@ app.use(cookieSession({
 // ... your logic here ...
 ```
 
+### Custom encode/decode (encryption example)
+
+If you want to encrypt (or compress) the session payload before it is
+stored in the cookie you can provide `encode` and `decode` functions to the
+middleware. Below is a minimal example using Node's `crypto` and AES-256-GCM.
+
+Note: this is a compact example for demonstration. In production you should
+securely manage keys, use unique nonces/IVs per-encryption, and consider
+authenticity/rotation policies.
+
+```js
+var cookieSession = require('cookie-session')
+var crypto = require('crypto')
+
+// secretKey should be 32 bytes for AES-256
+var secretKey = Buffer.from(process.env.SESSION_ENC_KEY, 'hex')
+
+function encodeEncrypted (obj) {
+  var plaintext = JSON.stringify(obj)
+  var iv = crypto.randomBytes(12) // recommended nonce size for GCM
+  var cipher = crypto.createCipheriv('aes-256-gcm', secretKey, iv)
+  var encrypted = Buffer.concat([cipher.update(plaintext, 'utf8'), cipher.final()])
+  var tag = cipher.getAuthTag()
+
+  // store iv + tag + cipher in base64 for cookie transport
+  return Buffer.concat([iv, tag, encrypted]).toString('base64')
+}
+
+function decodeEncrypted (str) {
+  var buf = Buffer.from(str, 'base64')
+  var iv = buf.slice(0, 12)
+  var tag = buf.slice(12, 28)
+  var encrypted = buf.slice(28)
+
+  var decipher = crypto.createDecipheriv('aes-256-gcm', secretKey, iv)
+  decipher.setAuthTag(tag)
+  var decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()])
+  return JSON.parse(decrypted.toString('utf8'))
+}
+
+app.use(cookieSession({
+  name: 'session',
+  keys: ['signing-key'], // still use signing for tamper protection
+  encode: encodeEncrypted,
+  decode: decodeEncrypted
+}))
+```
+
 ## Usage Limitations
 
 ### Max Cookie Size

@@ -57,14 +57,18 @@ function cookieSession (options) {
 
   debug('session options %j', opts)
 
+  // encode/decode overrides (allow encryption/compression/custom serialization)
+  var encodeFn = typeof opts.encode === 'function' ? opts.encode : encode
+  var decodeFn = typeof opts.decode === 'function' ? opts.decode : decode
+
   return function _cookieSession (req, res, next) {
     var cookies = new Cookies(req, res, {
       keys: keys
     })
     var sess
 
-    // for overriding
-    req.sessionOptions = Object.create(opts)
+  // for overriding
+  req.sessionOptions = Object.create(opts)
 
     // define req.session getter / setter
     Object.defineProperty(req, 'session', {
@@ -86,7 +90,7 @@ function cookieSession (options) {
       }
 
       // get session
-      if ((sess = tryGetSession(cookies, name, req.sessionOptions))) {
+      if ((sess = tryGetSession(cookies, name, req.sessionOptions, decodeFn))) {
         return sess
       }
 
@@ -125,7 +129,7 @@ function cookieSession (options) {
         } else if ((!sess.isNew || sess.isPopulated) && sess.isChanged) {
           // save populated or non-new changed session
           debug('save %s', name)
-          cookies.set(name, Session.serialize(sess), req.sessionOptions)
+          cookies.set(name, encodeFn(sess), req.sessionOptions)
         }
       } catch (e) {
         debug('error saving session %s', e.message)
@@ -273,7 +277,7 @@ function encode (body) {
  * @private
  */
 
-function tryGetSession (cookies, name, opts) {
+function tryGetSession (cookies, name, opts, decodeFn) {
   var str = cookies.get(name, opts)
 
   if (!str) {
@@ -283,7 +287,14 @@ function tryGetSession (cookies, name, opts) {
   debug('parse %s', str)
 
   try {
-    return Session.deserialize(str)
+    var obj = decodeFn(str)
+
+    // build session with context like Session.deserialize would do
+    var ctx = new SessionContext()
+    ctx._new = false
+    ctx._val = str
+
+    return new Session(ctx, obj)
   } catch (err) {
     return undefined
   }
