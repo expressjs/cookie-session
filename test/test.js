@@ -603,6 +603,46 @@ describe('Cookie Session', function () {
         })
     })
   })
+
+  describe('custom encode/decode', function () {
+    it('should allow overriding encode and decode functions', function (done) {
+      // simple encode/decode that prefixes with 'X:' and base64 encodes JSON
+      function myEncode (obj) {
+        var str = JSON.stringify(obj)
+        return 'X:' + Buffer.from(str).toString('base64')
+      }
+
+      function myDecode (str) {
+        if (str.indexOf('X:') !== 0) throw new Error('bad prefix')
+        var body = Buffer.from(str.slice(2), 'base64').toString('utf8')
+        return JSON.parse(body)
+      }
+
+      var app = connect()
+      app.use(session({ keys: ['a'], encode: myEncode, decode: myDecode }))
+      app.use(function (req, res) {
+        if (req.url === '/set') {
+          req.session.message = 'hello-enc'
+          return res.end()
+        }
+
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify(req.session))
+      })
+
+      request(app)
+        .get('/set')
+        .expect(shouldHaveCookie('session'))
+        .expect(200, '', function (err, res) {
+          if (err) return done(err)
+
+          request(app)
+            .get('/')
+            .set('Cookie', cookieHeader(cookies(res)))
+            .expect(200, { message: 'hello-enc' }, done)
+        })
+    })
+  })
 })
 
 function App (options) {
