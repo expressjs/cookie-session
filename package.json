@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "cookies": "0.9.1",
-    "debug": "3.2.7",
+    "debug": "~4.4.0",
     "on-headers": "~1.1.0",
     "safe-buffer": "5.2.1"
   },
