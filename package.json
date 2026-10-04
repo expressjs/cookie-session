@@ -19,7 +19,7 @@
     "url": "https://opencollective.com/express"
   },
   "dependencies": {
-    "cookies": "0.9.1",
+    "cookies": "0.9.2",
     "debug": "3.2.7",
     "on-headers": "~1.1.0",
     "safe-buffer": "5.2.1"
