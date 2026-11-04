@@ -61,6 +61,7 @@ function cookieSession (options) {
     var cookies = new Cookies(req, res, {
       keys: keys
     })
+    var replaced = false
     var sess
 
     // for overriding
@@ -103,6 +104,9 @@ function cookieSession (options) {
       }
 
       if (typeof val === 'object') {
+        // track replacing a session from the request
+        replaced = replaced || Boolean(tryGetSession(cookies, name, req.sessionOptions))
+
         // create a new session
         sess = Session.create(val)
         return sess
@@ -122,8 +126,8 @@ function cookieSession (options) {
           // remove
           debug('remove %s', name)
           cookies.set(name, '', req.sessionOptions)
-        } else if ((!sess.isNew || sess.isPopulated) && sess.isChanged) {
-          // save populated or non-new changed session
+        } else if ((!sess.isNew || sess.isPopulated || replaced) && sess.isChanged) {
+          // save populated, non-new or replacing changed session
           debug('save %s', name)
           cookies.set(name, Session.serialize(sess), req.sessionOptions)
         }
