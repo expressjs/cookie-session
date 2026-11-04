@@ -429,6 +429,22 @@ describe('Cookie Session', function () {
           .expect(200, done)
       })
     })
+
+    describe('when replaced with {}', function () {
+      it('should Set-Cookie with empty session', function (done) {
+        var app = App()
+        app.use(function (req, res, next) {
+          req.session = {}
+          res.end('aklsjdfkljasdf')
+        })
+
+        request(app)
+          .get('/')
+          .set('Cookie', cookie)
+          .expect(shouldHaveCookieWithValue('session', 'e30='))
+          .expect(200, done)
+      })
+    })
   })
 
   describe('when session = ', function () {
